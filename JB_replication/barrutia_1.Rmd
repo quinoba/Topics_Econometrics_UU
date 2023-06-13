@@ -1,0 +1,3854 @@
+---
+title: 'Environmental Regulations, Air and Water Pollution, and Infant Mortality in India: Comment'
+author: "Joaquín Barrutia Álvarez^[[joaquin.barrutia-alvarez.1895@student.uu.se](mailto:joaquin.barrutia-alvarez.1895@student.uu.se)]"
+date: "`r format(Sys.time(), '%B %Y')`"
+output:
+  pdf_document:
+    number_sections: yes
+    includes:
+      in_header: miscellanea/preamble.tex
+urlcolor: blue
+documentclass: article
+classoption: a4paper
+fontsize: 12pt
+bibliography: miscellanea/references.bib
+header-includes:
+#- \usepackage{setspace}\doublespacing
+- \usepackage{float}
+- \usepackage{booktabs}
+- \usepackage{longtable}
+- \usepackage{threeparttablex}
+- \usepackage{graphicx}
+- \usepackage{amsmath}
+- \usepackage{bm}
+- \usepackage{bbm}
+- \usepackage{relsize}
+- \usepackage{cancel}
+- \pagenumbering{gobble}
+geometry: margin=1in
+fig_caption: yes
+---
+
+\pagenumbering{arabic}
+
+ 
+
+```{r setup, include=FALSE}
+## setup and load all relevant packages
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(fig.pos = "!H", out.extra = "")
+library(knitr)    
+library(shiny)
+library(tidyverse)
+library(ggplot2)
+library(cowplot)
+library(png)
+library(tidyverse)
+library(ggrepel)
+library(ggtext)
+library(haven)
+library(kableExtra)
+library(readxl)
+library(estimatr)
+library(stargazer)
+library(fastDummies)
+library(sandwich)
+library(sf)
+library(gridExtra)
+library(plm)
+library(lmtest)
+library(latex2exp)
+```
+
+# Introduction{#id1}
+
+A recurring question in environmental sciences and economics revolves around the costs and adverse effects of air and water pollution on human health. Diseases caused by water and air pollution, such as diarrheal infections, respiratory and cardiovascular diseases, constitute a significant cause of death in developing countries [@brunekreef_air_2002; @duflo_toilets_2015; @garg_not_2018].
+
+Over time, economists have proposed various policies to achieve better equilibria in the interest of environmental conservation. Some examples are Pigouvian taxes [@baumol_theory_1988], cap and trade systems [@montgomery_markets_1972], command and control regulations [@baldwin_understanding_2012], among others. However, implementing these policies to reduce pollution in the natural resources of developing countries has proven to be challenging. Therefore, it is valuable to propose solutions beyond mainstream economics paradigms from a theoretical standpoint [@ostrom_governing_1990; @roemer_kantian_2010], but also to analyze implemented public policy proposals in diverse settings empirically. @greenstone_environmental_2014 assesses India’s air and water environmental regulations in their paper "Environmental Regulations, Air and Water Pollution, and Infant Mortality in India" ---henceforth, GH.
+
+GH research provides a valuable contribution to the understanding of the relationship between air and water environmental regulations and its impact on changes in pollution and infant mortality in India. By analyzing an extensive panel data and employing rigorous empirical methods, the authors shed light on the complex dynamics at play and offer insights into potential policy implications. India faces unique challenges in implementing effective environmental regulations due to its vast population, economic growth, resource constraints, and weak institutions. Enhancing our comprehension of the most effective approaches to mitigate local pollution has the potential to improve well-being by reducing health costs imposed by pollution.
+
+The empirical analysis conducted by GH demonstrates the efficacy of certain environmental policies in the presence of weak regulatory institutions. Specifically, they examine three pivotal policies in the Indian context, including two policies targeting air pollution and one policy aimed at river conservation. By employing a difference-in-differences design, the authors reveal a significant impact of the air pollution regulations while finding no discernible effect of the water pollution regulations.
+
+This paper seeks to build on GH's evidence by replicating the main results, reassessing the data collection process, refining the empirical strategy, and conducting additional sensitivity analyses, focusing mainly on the water policy and its effect on water pollution. It is important to note that the majority of this paper will be dedicated to exploring the policy concerning river conservation. However, some of the comments and suggestions made in this paper can also apply to the air quality analysis. Specifically, I will try to assess the NRCP effect on water quality, ignoring the analysis on its effect on infant mortality.
+
+The rationale behind the decision to concentrate on the water policy stems from two primary reasons. Firstly, a significant number of rural communities in developing countries lack access to potable and piped water, leading to a strong reliance on nearby bodies of water for consumption and domestic activities. Hence, a policy that effectively achieves a reduction in pollution levels in freshwater bodies would directly benefit the most vulnerable groups in developing countries.
+
+Secondly, river pollution provides a classic textbook example of negative spillover effects. The unidirectional flow of rivers simplifies the analysis of these effects, as we know that rivers flow from higher to lower points. This characteristic contrasts with the spillovers associated with air pollution, which are influenced by wind patterns and other meteorological factors, making spatial analysis more challenging.
+
+This paper proceeds as follows. Section \ref{id2} briefly summarizes GH’s paper, reviews data collection process, and outlines GH's research design. Section \ref{id3} provides a replication of the main results obtained by GH and expands GH's analysis proposing a new specification and suggesting future improvements to the work. Section \ref{id4} gives some final remarks.
+
+
+# GH Review {#id2}
+
+## India's Environmental Regulations Review {#id2.1}
+
+GH presents an analysis of the effectiveness of environmental regulations in India. Specifically, they examine the impacts of the Supreme Court Action Plans (SCAPs) and the Mandated Catalytic Converters (CAT) on air pollution and infant mortality, as well as the effects of the National River Conservation Plan (NRCP) on river pollution and infant mortality.
+
+The NRCP was initiated in 1985 for the Ganga River and later expanded to other rivers. At the time of the paper, NRCP covered 35 rivers in 164 cities. The criteria for coverage include standards for biological oxygen demand ($BOD$), dissolved oxygen ($DO$), fecal coliform ($FColi$), and pH measurements in surface water. The central aspect of the plan is the construction of sewage treatment plants, along with the interception, diversion, and sewage treatment through piping infrastructure. Additionally, efforts include the installation of community toilets, crematoria, and public awareness campaigns to address domestic pollution. However, the NRCP faced challenges due to limited cooperation among participating agencies, which is crucial in managing spillovers across different jurisdictions.
+
+## GH's Data {#id2.2}
+
+To assess the effectiveness of the policies, the authors created comprehensive city-level panel datasets that integrated data on air pollution concentrations, water pollution concentrations, environmental policies, infant mortality rates, and other pertinent control variables. These datasets were compiled from diverse sources, including data provided by the Indian government and secondary sources. For the purpose of their analysis and comparisons, the authors aggregated the original monthly station-level data to yearly city-level data using simple averages.
+
+The water quality data were obtained from monitoring stations maintained as part of the National Water Monitoring Programme. The dataset consists of observations from 489 stations located in 424 cities along 162 rivers, spanning the years 1986 to 2005. It is important to note that, starting from 2005, the data shifted from monthly to annual reporting. Additionally, the authors acknowledge in their replication code, specifically in the `waterclean-apr09_01102014.do` file, that there are issues with the data for the year 2005, and they used the rounded mean of the readings from 2002 to 2004 as an estimate for 2005. The monitoring stations provide measurements for various indicators of water quality, but the authors focus solely on three commonly used indicators: biological oxygen demand ($BOD$), dissolved oxygen ($DO$), and fecal coliform ($FColi$).
+
+Table \ref{tab:table1}'s first 4 columns replicate GH's Table 1 and provides an overview of the presence of the NRCP over time in the city-level water pollution concentrations dataset. Column Total is not included in the original paper, but it indicates the total number of cities in GH's sample that had a monitoring station at any given time. Column GH presents the count of cities in the sample with at least one recorded reading from a monitoring station in a specific year. Finally, Column NRCP shows the number of cities where the NRCP policy was in place each year.
+
+The authors further applied two restrictions to the full sample of data before conducting their analysis. Here's a simplified explanation of what they did:
+
+1. If a city had pollution data after implementing NRCP, it was only included in the analysis if it had at least one data point three or more years before the policy was enacted and four or more years after the policy was enacted.
+
+2. If a city had no pollution data after implementing NRCP (or if the city never enforced the policy), it was only included if it had at least two pollution data points.
+
+In Table \ref{tab:table1}'s columns 3 and 4, a city is counted if it has any pollution data for a specific year. However, for the subsequent regression analyses, a city is only included if it has pollution data for the particular indicator being studied in that regression. Therefore, the city counts provided in the table represent the maximum number of cities included in the regressions. Most city-years have data available for all the indicators studied. Specifically, Column 3 of Table \ref{tab:table1} represents the maximum number of cities available for GH's analysis in a given year, as monitoring stations are unavailable in every city every year. There is generally some variability in the maximum number of cities with functioning monitoring stations, and we can observe that the year 1986 has the most restricted sample, with only 104 out of 424 cities available for analysis. On the other hand, 2004 has the least sample restriction, with 395 out of 424 cities available for analysis.
+
+
+Table \ref{tab:table1}'s last three columns replicate exactly what was described above but at the station level. Meaning that Column Total indicates the total number of stations in GH's sample that had a reading at any given time. Column GH presents the count of stations in the sample with at least one recorded reading in a specific year. Finally, Column NRCP shows the number of stations where the NRCP policy was in place each year.
+
+
+Table \ref{tab:table_a} and \ref{tab:table_b}, in the Appendix, present the yearly city-level or station-level averages, medians, standard deviations, and observations for each water quality indicator. The standard deviation values indicate considerable variability in the BOD and ln(FColi) measurements.
+
+
+```{r table1, results = "asis", message = FALSE, echo=FALSE, warning = FALSE}
+####### Table 1 of paper
+
+# Read the data
+data <- read_dta("../GH_replication/Greenstone-and-Hanna--2014--Replication Files/Data/Water Data/Final Data/india_waters_cityyear.dta")
+
+# Create cityriver variable
+data <- data %>%
+  mutate(cityriver = paste(city, river, sep = " "))
+
+# Set missing values for specific variables in 2005
+data <- data %>%
+  mutate(across(starts_with("month_"), ~ if_else(year == 2005, 0, .)))
+
+# Drop temp* variables
+data <- data %>%
+  select(-starts_with("temp"))
+
+# Calculate yap1city, gap1city, gap2city, nrcpcity, dapcity, gomtiap1city
+data <- data %>%
+  group_by(cityriver) %>%
+  mutate(
+    yap1city = max(yap1),
+    gap1city = max(gap1),
+    gap2city = max(gap2),
+    nrcpcity = max(nrcp),
+    dapcity = max(dap),
+    gomtiap1city = max(gomtiap1)
+  )
+
+# Create temp2 variable
+data <- data %>%
+  mutate(temp2 = if_else(nrcpcity == 1, 1995,
+                         if_else(gap1city == 1, 1985,
+                         if_else(yap1city == 1 | gap2city == 1 |
+                                   dapcity == 1 | gomtiap1city == 1, 
+                                 1993,NA_integer_))))
+
+# Calculate temp3 variable
+data <- data %>%
+  group_by(cityriver) %>%
+  mutate(temp3 = min(year, na.rm = TRUE))
+
+
+# Create tau variable
+data <- data %>%
+  mutate(tau = if_else((temp2 > temp3) & 
+                         (!is.na(bod) | !is.na(do) | !is.na(lnfcoli)), 
+                       year - temp2,
+                       NA_integer_))
+
+# Create neveradopt variable
+data <- data %>%
+  mutate(neveradopt = if_else(is.na(temp2), 1, 0))
+
+# Create tempx variable
+data <- data %>%
+  mutate(tempx = if_else((yap1 == 1 | gap1 == 1 | gap2 == 1 | 
+                            nrcp == 1 | dap == 1 | gomtiap1 == 1) &
+                           (!is.na(bod) | !is.na(lnfcoli) | !is.na(do)), 1, 0))
+
+# Create tempy variable
+data <- data %>%
+  group_by(cityriver) %>%
+  mutate(
+    tempy = if_else(!is.na(temp2), min(tempx, na.rm = TRUE), NA_integer_)
+  )
+
+# Calculate variables temp4, temp5, Mtemp4, Mtemp5
+data <- data %>%
+  mutate(
+    temp4 = if_else(tau >= 3 & !is.na(tau), 1, 0),
+    temp5 = if_else(tau <= -3 & !is.na(tau), 1, 0))
+
+data <- data %>% group_by(cityriver) %>%
+  mutate(
+    Mtemp4 = max(temp4, na.rm = TRUE),
+    Mtemp5 = max(temp5, na.rm = TRUE),
+    use = (Mtemp4 == 1 & Mtemp5 == 1) | neveradopt == 1
+  )
+
+data <- data %>%
+  mutate(
+    use = if_else((Mtemp4 == 1 & Mtemp5 == 1) | neveradopt == 1,
+                  1,0)
+)
+
+# Keep only the relevant observations
+data <- data %>%
+  filter(use == 1) %>%
+  filter(!is.na(bod) | !is.na(do) | !is.na(lnfcoli))
+
+# Calculate count and cityno variables
+data <- data %>%
+  group_by(state, city) %>%
+  mutate(
+    count = row_number(),
+    cityno = max(count, na.rm = TRUE)
+  )
+
+# Drop cities with cityno less than 2
+data <- data %>%
+  filter(cityno >= 2)
+
+# Create Water Pollution Table
+gh_cities <- as.data.frame(table(data$year))
+pol_cities <- as.data.frame(table(data$year[data$yap1 == 1 | 
+                                              data$gap1 == 1 | 
+                                              data$gap2 == 1 | 
+                                              data$dap == 1 | 
+                                              data$gomtiap1 == 1 | 
+                                              data$nrcp == 1]))
+colnames(gh_cities) <- c("Year", "(2)")
+colnames(pol_cities) <- c("Year", "(3)")
+
+merged_cities <- left_join(gh_cities, pol_cities, by = "Year")
+
+merged_cities <- merged_cities %>%
+  mutate_all(~ replace(., is.na(.), 0)) %>%
+  mutate("(1)" = 424) %>%
+  select("Year", "(1)", everything())
+
+#### Replicate Table 1 at station level
+
+# Read the data
+data <- read_dta("../GH_replication/Greenstone-and-Hanna--2014--Replication Files/Data/Water Data/Final Data/india_waters_stncodeyear.dta")
+
+# Create stationriver variable
+data <- data %>%
+  mutate(stationriver = paste(stncode, river, sep = " "))
+
+# Set missing values for specific variables in 2005
+data <- data %>%
+  mutate(across(starts_with("month_"), ~ if_else(year == 2005, 0, .)))
+
+# Drop temp* variables
+data <- data %>%
+  select(-starts_with("temp"))
+
+# Calculate yap1city, gap1city, gap2city, nrcpcity, dapcity, gomtiap1city
+data <- data %>%
+  group_by(stationriver) %>%
+  mutate(
+    yap1city = max(yap1),
+    gap1city = max(gap1),
+    gap2city = max(gap2),
+    nrcpcity = max(nrcp),
+    dapcity = max(dap),
+    gomtiap1city = max(gomtiap1)
+  )
+
+# Create temp2 variable
+data <- data %>%
+  mutate(temp2 = if_else(nrcpcity == 1, 1995,
+                         if_else(gap1city == 1, 1985,
+                                 if_else(yap1city == 1 | gap2city == 1 | 
+                                           dapcity == 1 | gomtiap1city == 1, 
+                                         1993,NA_integer_))))
+
+# Calculate temp3 variable
+data <- data %>%
+  group_by(stationriver) %>%
+  mutate(temp3 = min(year, na.rm = TRUE))
+
+
+# Create tau variable
+data <- data %>%
+  mutate(tau = if_else((temp2 > temp3) & 
+                         (!is.na(bod) | !is.na(do) | !is.na(lnfcoli)), 
+                       year - temp2,
+                       NA_integer_))
+
+# Create neveradopt variable
+data <- data %>%
+  mutate(neveradopt = if_else(is.na(temp2), 1, 0))
+
+# Create tempx variable
+data <- data %>%
+  mutate(tempx = if_else((yap1 == 1 | gap1 == 1 | gap2 == 1 | 
+                            nrcp == 1 | dap == 1 | gomtiap1 == 1) &
+                           (!is.na(bod) | !is.na(lnfcoli) | !is.na(do)), 1, 0))
+
+# Create tempy variable
+data <- data %>%
+  group_by(stationriver) %>%
+  mutate(
+    tempy = if_else(!is.na(temp2), min(tempx, na.rm = TRUE), NA_integer_)
+  )
+
+# Calculate variables temp4, temp5, Mtemp4, Mtemp5
+data <- data %>%
+  mutate(
+    temp4 = if_else(tau >= 3 & !is.na(tau), 1, 0),
+    temp5 = if_else(tau <= -3 & !is.na(tau), 1, 0))
+
+data <- data %>% group_by(stationriver) %>%
+  mutate(
+    Mtemp4 = max(temp4, na.rm = TRUE),
+    Mtemp5 = max(temp5, na.rm = TRUE),
+    use = (Mtemp4 == 1 & Mtemp5 == 1) | neveradopt == 1
+  )
+
+data <- data %>%
+  mutate(
+    use = if_else((Mtemp4 == 1 & Mtemp5 == 1) | neveradopt == 1,
+                  1,0)
+  )
+
+# Keep only the relevant observations
+data <- data %>%
+  filter(use == 1) %>%
+  filter(!is.na(bod) | !is.na(do) | !is.na(lnfcoli))
+
+# Calculate count and cityno variables for stations
+data <- data %>%
+  group_by(city, stncode) %>%
+  mutate(
+    count = row_number(),
+    cityno = max(count, na.rm = TRUE)
+  )
+
+# Drop stations with cityno less than 2
+#variable name might be confusing it should be stationno
+data <- data %>%
+  filter(cityno >= 2)
+
+# Create Water Pollution Table
+gh_stations <- as.data.frame(table(data$year))
+pol_stations <- as.data.frame(table(data$year[data$yap1 == 1 | 
+                                                data$gap1 == 1 | 
+                                                data$gap2 == 1 | 
+                                                data$dap == 1 | 
+                                                data$gomtiap1 == 1 | 
+                                                data$nrcp == 1]))
+colnames(gh_stations) <- c("Year", "(2)")
+colnames(pol_stations) <- c("Year", "(3)")
+
+merged_stations <- left_join(gh_stations, pol_stations, by = "Year")
+
+merged_stations <- merged_stations %>%
+  mutate_all(~ replace(., is.na(.), 0)) %>%
+  mutate("(1)" = 489) %>%
+  select("Year", "(1)", everything())
+
+
+merged_tables <- left_join(merged_cities, merged_stations, by = "Year")
+
+# Create the note
+note <- "\\\\small{The table replicates GH’s Table 1. NRCP stands for National River Conservation Plan. Columns labeled as Total represent total number of cities or stations with at least one reading at any year. Columns labeled as GH show the number of cities or stations that have at least one water pollution reading in the particular year. Columns labeled as NRCP show the number of cities or stations where NRCP was implemented.}"
+
+
+k <- kable(merged_tables, format = "latex", booktabs = TRUE, align = "c",
+           linesep = "",
+           caption = "Number of Cities/Stations and Prevalence of Water Policy",
+           col.names = c("Year", "Total", "GH", "NRCP", "Total",
+                         "GH", "NRCP"))
+
+k %>% 
+  add_header_above(c(" " = 1,
+                     "Cities"= 3,
+                     "Stations"= 3)) %>%
+  footnote(general = note, threeparttable = T, escape = F, footnote_as_chunk = T ) %>% 
+  kable_styling(latex_options = "HOLD_position")
+
+```
+
+
+## GH's Empirical Strategy {#id2.3}
+
+GH's research design leverages the significant variation observed among cities regarding the timing of water policy adoption. The authors employ a two-step econometric approach using a difference-in-differences design. In the first step, they use the following event study equation:
+
+\begin{equation}
+\label{eq:1}
+Y_{ct} = \alpha + \sum_{\tau} \sigma_{\tau} \bm{D}_{\tau,ct} + \mu_t + \gamma_c + \beta \bm{X}_{ct} + \epsilon_{ct}
+\end{equation}
+
+Here, $Y_{ct}$ represents one of the three water pollution measures in city $c$ during year $t$. The authors include city fixed effects, $\gamma_c$, to help control for unobserved factors that influence pollution levels across cities. Additionally, the year fixed effects, $\mu_t$, are included to nonparametrically account for national trends in pollution. The equation also incorporates controls for per capita consumption and literacy rates ($\bm{X}_{ct}$) to adjust for differences in growth rates among districts. To address precision differences resulting from city size, the estimating equation is weighted by the district-urban population. The vector $\bm{D}_{\tau,ct}$ consists of separate indicator variables for each year before and after NRCP is implemented. $\tau$ is normalized so that it equals zero in the year the NRCP policy is enacted. For non-adopting cities, all $\tau$ values are set to zero.
+
+The $\sigma_{\tau}$ parameters measure the average annual river pollution concentration before and after NRCP implementation. The variation in the timing of policy adoption across cities enables the identification of the $\sigma_{\tau}$s.
+
+
+Using the estimated coefficients $\hat{\sigma}_{\tau}$, the authors proceed to estimate equation (\ref{eq:2}), which represents GH's preferred specification (2C):
+
+\begin{equation}
+\label{eq:2}
+\hat{\sigma}_{\tau} = \pi_0 + \pi_1 \mathbbm{1}(Policy)_{\tau} + \pi_2 \tau + \pi_3(\mathbbm{1}(Policy)_{\tau} \times \tau) + \epsilon_{\tau}
+\end{equation}
+
+In this equation, $\mathbbm{1}(Policy)_{\tau}$ serves as an indicator variable to determine whether the NRCP is in effect (i.e., $\tau \geq 1$). The coefficient $\pi_1$ tests for a mean shift in water pollution concentrations following the implementation of the NRCP. This specification includes a linear time trend to account for preexisting differential trends in cities that adopted the policy represented by $\tau$. Additionally, it allows for NRCP impact to evolve over time ($\mathbbm{1}(Policy)_{\tau} \times \tau$).
+
+
+GH's main results related to water pollution indicate that there is little evidence that the NRCP effectively reduced pollution concentrations in rivers. In fact, there were actually deteriorations in river water quality five years after the policy was enforced. BOD concentrations increased by 5.85 mg/L at a 10% significance level. DO concentrations declined by 0.63 mg/L at a 1% significance level ---a decrease in DO signals higher pollution levels.
+
+# Reassessing GH {#id3}
+
+This section will be divided into two parts. The first part will replicate GH's results using their preferred specification, and an alternative specification will also be estimated. The second part will propose potential additional specifications that could be explored in the future to further strengthen the findings' robustness.
+
+The authors provided a replication package which I used to replicate and extend their analysis. However, the provided package had several inconsistencies in file names, and some lines of code were missing to create certain necessary subfolders. I have corrected the code and modified the file names to ensure consistency with the names used in the code. This updated replication package is now available at the path `Topics_assignment/GH_replication/Greenstone-and-Hanna--2014--Replication Files`.
+
+## GH Data Limitations {#id3.1}
+
+One of the main issues with the analysis presented in GH is related to the data used. The availability of cities or stations to construct the final dataset used to estimate equations (\ref{eq:1}) and (\ref{eq:2}) is very limited. This limitation cannot be attributed to the authors, as the maintenance and installation of stations annually depend on the National River Conservation Directorate. Looking at Table 1, we can observe that for the first 7 years, less than 300 cities were covered by the monitoring network out of a total of 424 participating cities. The same observation can be made for stations, where in the first 6 years, there were fewer than 300 stations out of a total of 489.
+
+The second issue with the final database used by GH is attributable to the authors themselves. They aggregate the data in two ways: first, they aggregate monthly data at the station level by obtaining station-year simple averages, resulting in annual data at the station level. Then, they further aggregate these annual station-level data by getting city simple averages, resulting in a final database at the city level with annual frequency.
+
+Using simple spatial and temporal aggregation through simple averages is not the most appropriate approach in environmental contexts with significant spillovers [@kyrychenko_environmental_2021]. @kyrychenko_environmental_2021 suggests using spatial interpolation as a better aggregation method. Let's consider an extreme case where we use the annual average of a single station to measure the pollution concentration in the rivers of a city that may have different neighborhoods, some more rural and others more industrial, or with more than one river. This average is unlikely to provide meaningful information about a city's water pollution concentration level.
+
+The location of the stations will be highly relevant, and our conclusions will be incorrect if we use a simple average as the aggregation method. Evidence shows that river pollution increases at increasing rates in downstream areas near jurisdictional boundaries [@lipscomb_decentralization_2017]. Let's consider another hypothetical case, as shown in Figure \ref{fig:plot1}. This map depicts the city of Delhi at two different points in time ---fictitious stations were added for illustrative purposes. We can see a single station upstream in the years before the implementation of the NRCP. After the policy, an additional station was added very close to the downstream city border. Suppose we calculate the city-level average water quality for each respective period. In that case, we would likely obtain a lower average in the pre-NRCP period because the new downstream observation would push up the average in the post-NRCP period. This simple example demonstrates how we could arrive at the incorrect conclusion that pollution concentration increased in Delhi due to the NRCP implementation.
+
+```{r echo=FALSE, fig.cap="\\label{fig:plot1} Hypothetical Monitoring Stations in Delhi Pre and Post NRCP", message=FALSE, warning=FALSE, fig.height= 5, fig.width= 10}
+
+delhi_shp <- read_sf('data/GIS/export.geojson') %>% 
+  filter(id == 'relation/1942586')
+
+rivers_shp <- read_sf('data/GIS/IND_wat/IND_water_areas_dcw.shp') %>% 
+  filter(is.na(NAME))
+
+
+# Clean geometries
+delhi_clean <- st_make_valid(delhi_shp)
+rivers_clean <- st_make_valid(rivers_shp) 
+
+# Intersect the cleaned geometries
+rivers_delhi <- st_intersection(rivers_clean, delhi_clean)
+
+# Convert to data frames
+df_rivers <- st_coordinates(rivers_delhi) %>%
+  as.data.frame() %>%
+  rename(x = X, y = Y)
+
+rivers_delhi_df <- st_as_sf(rivers_delhi) %>%
+  st_cast("LINESTRING") %>%
+  st_coordinates() %>%
+  as.data.frame() %>%
+  rename(x = X, y = Y) %>% filter(x<=77.22)
+
+df_delhi <- st_sf(geometry = delhi_shp) %>%
+  st_cast("POLYGON") %>%
+  st_coordinates() %>%
+  as.data.frame() %>%
+  rename(x = X, y = Y)
+
+
+# First Map
+# Coordinates for the fictional points and arrow indicating the river flow
+point_coords_1 <- data.frame(x = c(77.2), y = c(28.79))
+arrow_coords_1 <- data.frame(start_x = 77.15, start_y = 28.77, end_x = 77.025, end_y = 28.6)
+
+# Plotting First Map
+map_1 <- ggplot() +
+  geom_polygon(data = df_delhi, aes(x = x, y = y), fill = "white", color = "black") +
+  geom_line(data = rivers_delhi_df, aes(x = x, y = y), color = "blue") +
+  geom_point(data = point_coords_1, aes(x = x, y = y), color = "red", size = 2) +
+  geom_segment(data = arrow_coords_1, aes(x = start_x, y = start_y, xend = end_x, yend = end_y),
+               arrow = arrow(length = unit(0.25, "cm")), color = "black") +
+  coord_equal() +
+  xlim(min(df_delhi$x, rivers_delhi_df$x), max(df_delhi$x, rivers_delhi_df$x)) +
+  ylim(min(df_delhi$y, rivers_delhi_df$y), max(df_delhi$y, rivers_delhi_df$y)) +
+  theme(panel.grid = element_blank(), panel.border = element_blank()) +
+  labs(x = "Longitude", y = "Latitude") + 
+  ggtitle("Panel A. Monitoring stations pre-NRCP")
+
+# Second Map
+point_coords_2 <- data.frame(x = c(77.01, 77.2), y = c(28.54, 28.79))
+
+# Plotting Second Map
+map_2 <- ggplot() +
+  geom_polygon(data = df_delhi, aes(x = x, y = y), fill = "white", color = "black") +
+  geom_line(data = rivers_delhi_df, aes(x = x, y = y), color = "blue") +
+  geom_point(data = point_coords_2, aes(x = x, y = y), color = "red", size = 2) +
+  geom_segment(data = arrow_coords_1, aes(x = start_x, y = start_y, xend = end_x, yend = end_y),
+               arrow = arrow(length = unit(0.25, "cm")), color = "black") +
+  coord_equal() +
+  xlim(min(df_delhi$x, rivers_delhi_df$x), max(df_delhi$x, rivers_delhi_df$x)) +
+  ylim(min(df_delhi$y, rivers_delhi_df$y), max(df_delhi$y, rivers_delhi_df$y)) +
+  theme(panel.grid = element_blank(), panel.border = element_blank()) +
+  labs(x = "Longitude", y = "Latitude") + 
+  ggtitle("Panel B. Monitoring stations post-NRCP")
+
+# Display both maps side by side
+grid.arrange(map_1, map_2, ncol = 2, bottom = "Notes: Hypothetical example of changes in monitoring stations in Delhi before and after the NRCP was implemented. \nRed dots represent monitoring stations, blue lines represent rivers. The black arrow represents the streamflow direction.  \nData obtained from open-source maps.")
+
+```
+
+
+## Expanded GH Analysis {#id3.2}
+
+The analysis presented in GH was replicated using the original GH final sample. The results are fully replicable, but there are some considerations to mention. The authors estimate equation (\ref{eq:1}), but in addition to the time and city fixed effects, they also introduce river fixed effects, $\xi_r$.
+
+\begin{equation}
+\label{eq:3}
+Y_{ct} = \alpha + \sum_{\tau} \sigma_{\tau} \bm{D}_{\tau,ct} + \mu_t + \gamma_c + \xi_r + \beta \bm{X}_{ct} + \epsilon_{ct}
+\end{equation}
+
+Figure 6 in GH presents these results; however, they only plot the point estimates without their corresponding confidence intervals. The authors do not mention how they calculated their standard errors, nor do they present them anywhere. In Figure \ref{fig:plot2} of this paper, I show the replicated results of GH, labeled as "GH Replication," in red, and I include the corresponding confidence intervals for each point estimate. Clustered standard errors were calculated, clustered at the city and river levels. This decision is because the NRCP is implemented at the river level, aiming to address pollution in specific rivers rather than cities. However, there may be correlation within cities and within rivers that could affect pollution levels. Clustering at both the city and river levels would be a more robust approach to address these potential correlations.
+
+This graph shows the results presented in GH: the policy effects in all subsequent periods are statistically indistinguishable from zero for the three water quality indicators.
+
+Due to the lack of precise geospatial data for proper spatial interpolation, disaggregated data were used instead. Initially, the aggregated annual and station-level data were used, and the estimated equation became as follows:
+
+\begin{equation}
+\label{eq:4}
+Y_{sct} = \alpha + \sum_{\tau} \sigma_{\tau} \bm{D}_{\tau,sct} + \mu_t + \gamma_s + \xi_r + \beta \bm{X}_{ct} + \epsilon_{sct}
+\end{equation}
+
+Where all variables are interpreted similarly to Estimating Equation (\ref{eq:1}), but now at the monitoring station level, that is, $Y_{sct}$ represents one of the three water pollution measures in monitoring station $s$ in city $c$ during year $t$. Using station-level data instead of city-level data is advantageous for two reasons. First, it avoids the issues depicted in Figure \ref{fig:plot1}. Second, by introducing station fixed effects, we implicitly control for the location of the stations, as the station locations should remain constant over the years. This way, we control for distance to downstream borders, the zone where the station is located (e.g., if it's rural or urban), among other possible confounders that should have been taken into account.
+
+The results of this specification, labeled as "JB Specification," are presented in blue in Figure \ref{fig:plot2}. The standard errors are clustered at the station and river levels. These results are very similar to the results of GH. The policy effects are not statistically different from zero. However, it can be noted that the point estimate for the BOD indicator in the JB Specification is consistently above zero in the periods following the implementation of the NRCP.
+
+Lastly, I used the most disaggregated data within the GH replication package. These data are available at the monthly and station levels, and equation (\ref{eq:4}) was estimated using this dataset. Additionally, the original equation of GH (\ref{eq:3}) was estimated using this dataset. This is this paper's preferred sample because it includes more than 30,000 observations for each water quality indicator. The yearly aggregated samples do not exceed 7,000 observations. 
+
+Figure \ref{fig:plot3} shows the results using the most disaggregated sample. Once again, the standard errors are clustered at the station and river levels. Using the GH specification, we obtain less precise estimators. However, we find almost the same mixed effects in both JB and GH specifications. 
+
+On the one hand, for the BOD indicator, we again see all the point estimates above zero, and in several periods, they are statistically different from zero. On the other hand, for the ln(FColi) indicator, we observe that most point estimates are below zero, and in some periods, they are significant at the 5% level. However, some of the estimates before the implementation of the NRCP in the ln(FColi) indicator are statistically different from zero, suggesting that there may have been ongoing pre-existing trends affecting the outcome variable before the policy was implemented. These trends can confound the estimation of the policy's effect. It is also possible that anticipation effects exist. If the NRCP was widely anticipated before implementation, it could have influenced the behavior of individuals or local governments, leading to changes in the ln(FColi) variable before the actual policy implementation.
+
+One explanation for why the parallel trends assumption may not hold for the ln(FColi) indicator but holds for the BOD indicator is that the reduction of fecal coliforms can be achieved through disinfection treatments, such as water chlorination, which can quickly reduce its concentration and improve the bacteriological quality of water. This process is usually relatively rapid and effective. On the other hand, reducing BOD involves decreasing the amount of organic matter and nutrients present, which requires more complex treatment processes and additional time, possibly necessitating more sophisticated treatment systems.
+
+Appendix Figure \ref{fig:plot_a} can be consulted to further strengthen the robustness of the results. It transforms the BOD indicator into ln(BOD) to make it comparable to ln(FColi). In general, the results seem to hold. Six years after the implementation of the policy, the levels of ln(BOD) appear to increase, suggesting a deterioration in water quality, and it appears that there are no pre-existing trends or anticipation effects in the BOD indicator.
+
+The second-step equation (\ref{eq:2}) was not estimated as I consider it only as an additional robustness measure, as it solely tests for structural breaks. Presenting equation (\ref{eq:2}) as the final results, rather than as an additional robustness measure as GH does, seems inappropriate. The authors provide little discussion on the results of the first step and present uninformative event-study plots. These are the relevant results, as structural break tests typically assume a single structural change rather than capturing heterogeneous treatment effects across different periods, which is the primary essence of an event study strategy.
+
+
+```{r, include=FALSE}
+################## Levels
+###### BOD City Level
+
+# Read the data
+data <- read_dta("../GH_replication/Greenstone-and-Hanna--2014--Replication Files/Data/Water Data/Final Data/india_waters_cityyear.dta")
+
+# Create cityriver variable
+data <- data %>%
+  mutate(cityriver = paste(city, river, sep = " "))
+
+# Set missing values for specific variables in 2005
+data <- data %>%
+  mutate(across(starts_with("month_"), ~ if_else(year == 2005, 0, .)))
+
+# Drop temp* variables
+data <- data %>%
+  select(-starts_with("temp"))
+
+# Calculate yap1city, gap1city, gap2city, nrcpcity, dapcity, gomtiap1city
+data <- data %>%
+  group_by(cityriver) %>%
+  mutate(
+    yap1city = max(yap1),
+    gap1city = max(gap1),
+    gap2city = max(gap2),
+    nrcpcity = max(nrcp),
+    dapcity = max(dap),
+    gomtiap1city = max(gomtiap1)
+  )
+
+# Create temp2 variable
+data <- data %>%
+  mutate(temp2 = if_else(nrcpcity == 1, 1995,
+                         if_else(gap1city == 1, 1985,
+                                 if_else(yap1city == 1 | gap2city == 1 |
+                                           dapcity == 1 | gomtiap1city == 1, 
+                                         1993,NA_integer_))))
+
+
+# Calculate temp3 variable
+data <- data %>%
+  group_by(cityriver) %>%
+  mutate(temp3 = min(year, na.rm = TRUE))
+
+
+# Create tau variable
+data <- data %>%
+  mutate(tau = if_else((temp2 > temp3) & 
+                         (!is.na(bod)), 
+                       year - temp2,
+                       NA_integer_))
+
+# Create neveradopt variable
+data <- data %>%
+  mutate(neveradopt = if_else(is.na(temp2), 1, 0))
+
+# Create tempx variable
+data <- data %>%
+  mutate(tempx = if_else((yap1 == 1 | gap1 == 1 | gap2 == 1 | 
+                            nrcp == 1 | dap == 1 | gomtiap1 == 1) &
+                           (!is.na(bod)), 1, NA_integer_))
+
+# Create tempy variable
+data <- data %>%
+  group_by(cityriver) %>%
+  mutate(
+    tempy = if_else(!is.na(temp2), min(tempx, na.rm = TRUE), NA_integer_)
+  )
+
+# Calculate variables temp4, temp5, Mtemp4, Mtemp5
+data <- data %>%
+  mutate(
+    temp4 = if_else(tau >= 3 & !is.na(tau), 1, 0),
+    temp5 = if_else(tau <= -3 & !is.na(tau), 1, 0))
+
+data <- data %>% group_by(cityriver) %>%
+  mutate(
+    Mtemp4 = max(temp4, na.rm = TRUE),
+    Mtemp5 = max(temp5, na.rm = TRUE))
+
+# Calculate count variable
+data <- data %>%
+  group_by(state, city) %>%
+  mutate(count = sum(!is.na(bod)))
+
+#Create use variable
+data <- data %>%
+  mutate(
+    use = if_else((Mtemp4 == 1 & Mtemp5 == 1) | (neveradopt == 1 & count > 1),
+                  1,0),
+    one = 1
+  )
+data <- data %>% arrange(state,city, -year)
+
+
+# Keep only the relevant observations
+data <- data %>%
+  filter(use == 1) %>%
+  filter(!is.na(bod))
+
+# Create taum variables
+for (i in 7:1) {
+  taum_var <- paste0("taum", i)
+  data <- data %>%
+    mutate({{taum_var}} := if_else(tau == -i, 1, 0))
+}
+
+# Replace remaining NA values with 0 in taum variables
+taum_vars <- paste0("taum", 1:7)
+data <- data %>%
+  mutate(across(all_of(taum_vars), ~ if_else(is.na(.), 0, .)))
+
+# Create tau variables
+for (i in 0:10) {
+  tau_var <- paste0("tau", i)
+  data <- data %>%
+    mutate({{tau_var}} := if_else(tau == i, 1, 0))
+}
+
+# Replace remaining NA values with 0 in tau variables
+tau_vars <- paste0("tau", 0:10)
+data <- data %>%
+  mutate(across(all_of(tau_vars), ~ if_else(is.na(.), 0, .)))
+
+data <- data %>% arrange(state,city, -year)
+
+# Create tauL and tauR variables
+data <- data %>%
+  mutate(
+    tauL = ifelse(tau < -7, 1, 0),
+    tauR = ifelse((tau > 10) & (!is.na(tau)), 1, 0)
+  ) %>% 
+  mutate(
+    tauL = ifelse(is.na(tauL),0, tauL)
+  )
+
+# Perform regression
+reg_model <- lm(bod ~ taum7 + taum6 + taum5 + taum4 + taum3 + taum2  +
+                  tau0 + tau1 + tau2 + tau3 + tau4 + tau5 + tau6 + tau7 + tau8 +
+                  tau9 + tau10 + tauL + tauR + lit_urban + pce + cityriver +
+                  factor(year), data = data, weights = pop_urban)
+
+
+# Calculate the clustered standard errors
+clustered_se <- sqrt(diag(vcovHC(reg_model, cluster = ~ cityriver, type = "HC1")))
+
+coefs <- coef(reg_model)
+event_study_data_gh <- data.frame(estimate = coefs, std_error_c = clustered_se)
+event_study_data_gh$term <- row.names(event_study_data_gh)  
+row.names(event_study_data_gh) <- NULL
+
+
+target <- c("taum7","taum6","taum5","taum4","taum3","taum2",
+            "tau0","tau1","tau2","tau3","tau4","tau5","tau6","tau7","tau8",
+            "tau9","tau10")
+
+event_study_data_gh <- event_study_data_gh %>% filter(term %in% target) %>% 
+  mutate(time = c(-7,-6,-5,-4,-3,-2,0,1,2,3,4,5,6,7,8,9,10),
+         lower = estimate - 1.96 * std_error_c,  # 95% confidence interval
+         upper = estimate + 1.96 * std_error_c)
+
+
+###### BOD Station Level 
+#variable names might be confusing but everything is at stn level
+
+# Read the data
+data <- read_dta("../GH_replication/Greenstone-and-Hanna--2014--Replication Files/Data/Water Data/Final Data/india_waters_stncodeyear.dta")
+
+# Create stnriver variable
+data <- data %>%
+  mutate(cityriver = paste(stncode, river, sep = " "))
+
+# Set missing values for specific variables in 2005
+data <- data %>%
+  mutate(across(starts_with("month_"), ~ if_else(year == 2005, 0, .)))
+
+# Drop temp* variables
+data <- data %>%
+  select(-starts_with("temp"))
+
+# Calculate yap1city, gap1city, gap2city, nrcpcity, dapcity, gomtiap1city
+data <- data %>%
+  group_by(cityriver) %>%
+  mutate(
+    yap1city = max(yap1),
+    gap1city = max(gap1),
+    gap2city = max(gap2),
+    nrcpcity = max(nrcp),
+    dapcity = max(dap),
+    gomtiap1city = max(gomtiap1)
+  )
+
+# Create temp2 variable
+data <- data %>%
+  mutate(temp2 = if_else(nrcpcity == 1, 1995,
+                         if_else(gap1city == 1, 1985,
+                                 if_else(yap1city == 1 | gap2city == 1 |
+                                           dapcity == 1 | gomtiap1city == 1, 
+                                         1993,NA_integer_))))
+
+
+# Calculate temp3 variable
+data <- data %>%
+  group_by(cityriver) %>%
+  mutate(temp3 = min(year, na.rm = TRUE))
+
+
+# Create tau variable
+data <- data %>%
+  mutate(tau = if_else((temp2 > temp3) & 
+                         (!is.na(bod)), 
+                       year - temp2,
+                       NA_integer_))
+
+# Create neveradopt variable
+data <- data %>%
+  mutate(neveradopt = if_else(is.na(temp2), 1, 0))
+
+# Create tempx variable
+data <- data %>%
+  mutate(tempx = if_else((yap1 == 1 | gap1 == 1 | gap2 == 1 | 
+                            nrcp == 1 | dap == 1 | gomtiap1 == 1) &
+                           (!is.na(bod)), 1, NA_integer_))
+
+# Create tempy variable
+data <- data %>%
+  group_by(cityriver) %>%
+  mutate(
+    tempy = if_else(!is.na(temp2), min(tempx, na.rm = TRUE), NA_integer_)
+  )
+
+# Calculate variables temp4, temp5, Mtemp4, Mtemp5
+data <- data %>%
+  mutate(
+    temp4 = if_else(tau >= 3 & !is.na(tau), 1, 0),
+    temp5 = if_else(tau <= -3 & !is.na(tau), 1, 0))
+
+data <- data %>% group_by(cityriver) %>%
+  mutate(
+    Mtemp4 = max(temp4, na.rm = TRUE),
+    Mtemp5 = max(temp5, na.rm = TRUE))
+
+# Calculate count variable
+data <- data %>%
+  group_by(state, stncode) %>%
+  mutate(count = sum(!is.na(bod)))
+
+#Create use variable
+data <- data %>%
+  mutate(
+    use = if_else((Mtemp4 == 1 & Mtemp5 == 1) | (neveradopt == 1 & count > 1),
+                  1,0),
+    one = 1
+  )
+data <- data %>% arrange(state,city, -year)
+
+
+# Keep only the relevant observations
+data <- data %>%
+  filter(use == 1) %>%
+  filter(!is.na(bod))
+
+# Create taum variables
+for (i in 7:1) {
+  taum_var <- paste0("taum", i)
+  data <- data %>%
+    mutate({{taum_var}} := if_else(tau == -i, 1, 0))
+}
+
+# Replace remaining NA values with 0 in taum variables
+taum_vars <- paste0("taum", 1:7)
+data <- data %>%
+  mutate(across(all_of(taum_vars), ~ if_else(is.na(.), 0, .)))
+
+# Create tau variables
+for (i in 0:10) {
+  tau_var <- paste0("tau", i)
+  data <- data %>%
+    mutate({{tau_var}} := if_else(tau == i, 1, 0))
+}
+
+# Replace remaining NA values with 0 in tau variables
+tau_vars <- paste0("tau", 0:10)
+data <- data %>%
+  mutate(across(all_of(tau_vars), ~ if_else(is.na(.), 0, .)))
+
+data <- data %>% arrange(state,city, -year)
+
+# Create tauL and tauR variables
+data <- data %>%
+  mutate(
+    tauL = ifelse(tau < -7, 1, 0),
+    tauR = ifelse((tau > 10) & (!is.na(tau)), 1, 0)
+  ) %>% 
+  mutate(
+    tauL = ifelse(is.na(tauL),0, tauL)
+  )
+
+# Perform regression
+reg_model <- lm(bod ~ taum7 + taum6 + taum5 + taum4 + taum3 + taum2  +
+                    tau0 + tau1 + tau2 + tau3 + tau4 + tau5 + tau6 + tau7 + tau8 +
+                    tau9 + tau10 + tauL + tauR + lit_urban + pce + cityriver +
+                    factor(year), data = data, weights = pop_urban)
+
+
+# Calculate the clustered standard errors
+clustered_se <- sqrt(diag(vcovHC(reg_model, cluster = ~ cityriver, type = "HC1")))
+
+coefs <- coef(reg_model)
+event_study_data_jb <- data.frame(estimate = coefs, std_error_c = clustered_se)
+event_study_data_jb$term <- row.names(event_study_data_jb)
+row.names(event_study_data_jb) <- NULL
+
+
+target <- c("taum7","taum6","taum5","taum4","taum3","taum2",
+            "tau0","tau1","tau2","tau3","tau4","tau5","tau6","tau7","tau8",
+            "tau9","tau10")
+
+event_study_data_jb <- event_study_data_jb %>% filter(term %in% target) %>% 
+  mutate(time = c(-7,-6,-5,-4,-3,-2,0,1,2,3,4,5,6,7,8,9,10),
+         lower = estimate - 1.96 * std_error_c,  # 95% confidence interval
+         upper = estimate + 1.96 * std_error_c)
+
+# Merge data
+event_study_data_jb$specification <- "JB Specification"
+event_study_data_gh$specification <- "GH Specification"
+
+merged_study_data <- rbind(event_study_data_gh,event_study_data_jb)
+
+# Plot Event study
+es_bod <- ggplot(data = merged_study_data, aes(x = time, y = estimate, group = specification)) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "black") +
+  geom_vline(xintercept = -1, linetype = "dashed", color = "black") +
+  geom_point(
+    aes(shape = specification, color = specification),
+    size = 3,
+    position = position_nudge(x = 
+                                ifelse(merged_study_data$specification == "JB Specification", 
+                                       -0.2, 0.2))
+  ) +
+  geom_linerange(
+    aes(ymin = lower, ymax = upper, color = specification),
+    position = position_nudge(x = 
+                                ifelse(merged_study_data$specification == "JB Specification",
+                                       -0.2, 0.2))
+  ) +
+  xlab("Years since NRCP implementation") +
+  ylab("Effect on BOD") +
+  theme_minimal() +
+  theme(
+    axis.text = element_text(size = 10),
+    axis.title = element_text(size = 12, face = "bold"),
+    legend.position = "none"
+  ) +
+  scale_x_continuous(
+    breaks = seq(min(merged_study_data$time), max(merged_study_data$time), 
+                 by = 2),
+    labels = seq(min(merged_study_data$time), max(merged_study_data$time), 
+                 by = 2)
+  ) +
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 8)) +
+  geom_text(
+    data = merged_study_data %>% distinct(specification, .keep_all = TRUE),
+    aes(x = 8, y = c(12, 11.5), label = specification, color = specification),
+    hjust = 0,
+    vjust = c(0, 1),
+    show.legend = FALSE
+  )
+
+
+```
+
+
+```{r, include=FALSE}
+###### DO City Level
+
+# Read the data
+data <- read_dta("../GH_replication/Greenstone-and-Hanna--2014--Replication Files/Data/Water Data/Final Data/india_waters_cityyear.dta")
+
+# Create cityriver variable
+data <- data %>%
+  mutate(cityriver = paste(city, river, sep = " "))
+
+# Set missing values for specific variables in 2005
+data <- data %>%
+  mutate(across(starts_with("month_"), ~ if_else(year == 2005, 0, .)))
+
+# Drop temp* variables
+data <- data %>%
+  select(-starts_with("temp"))
+
+# Calculate yap1city, gap1city, gap2city, nrcpcity, dapcity, gomtiap1city
+data <- data %>%
+  group_by(cityriver) %>%
+  mutate(
+    yap1city = max(yap1),
+    gap1city = max(gap1),
+    gap2city = max(gap2),
+    nrcpcity = max(nrcp),
+    dapcity = max(dap),
+    gomtiap1city = max(gomtiap1)
+  )
+
+# Create temp2 variable
+data <- data %>%
+  mutate(temp2 = if_else(nrcpcity == 1, 1995,
+                         if_else(gap1city == 1, 1985,
+                                 if_else(yap1city == 1 | gap2city == 1 |
+                                           dapcity == 1 | gomtiap1city == 1, 
+                                         1993,NA_integer_))))
+
+
+# Calculate temp3 variable
+data <- data %>%
+  group_by(cityriver) %>%
+  mutate(temp3 = min(year, na.rm = TRUE))
+
+
+# Create tau variable
+data <- data %>%
+  mutate(tau = if_else((temp2 > temp3) & 
+                         (!is.na(do)), 
+                       year - temp2,
+                       NA_integer_))
+
+# Create neveradopt variable
+data <- data %>%
+  mutate(neveradopt = if_else(is.na(temp2), 1, 0))
+
+# Create tempx variable
+data <- data %>%
+  mutate(tempx = if_else((yap1 == 1 | gap1 == 1 | gap2 == 1 | 
+                            nrcp == 1 | dap == 1 | gomtiap1 == 1) &
+                           (!is.na(do)), 1, NA_integer_))
+
+# Create tempy variable
+data <- data %>%
+  group_by(cityriver) %>%
+  mutate(
+    tempy = if_else(!is.na(temp2), min(tempx, na.rm = TRUE), NA_integer_)
+  )
+
+# Calculate variables temp4, temp5, Mtemp4, Mtemp5
+data <- data %>%
+  mutate(
+    temp4 = if_else(tau >= 3 & !is.na(tau), 1, 0),
+    temp5 = if_else(tau <= -3 & !is.na(tau), 1, 0))
+
+data <- data %>% group_by(cityriver) %>%
+  mutate(
+    Mtemp4 = max(temp4, na.rm = TRUE),
+    Mtemp5 = max(temp5, na.rm = TRUE))
+
+# Calculate count variable
+data <- data %>%
+  group_by(state, city) %>%
+  mutate(count = sum(!is.na(do)))
+
+#Create use variable
+data <- data %>%
+  mutate(
+    use = if_else((Mtemp4 == 1 & Mtemp5 == 1) | (neveradopt == 1 & count > 1),
+                  1,0),
+    one = 1
+  )
+data <- data %>% arrange(state,city, -year)
+
+
+# Keep only the relevant observations
+data <- data %>%
+  filter(use == 1) %>%
+  filter(!is.na(do))
+
+# Create taum variables
+for (i in 7:1) {
+  taum_var <- paste0("taum", i)
+  data <- data %>%
+    mutate({{taum_var}} := if_else(tau == -i, 1, 0))
+}
+
+# Replace remaining NA values with 0 in taum variables
+taum_vars <- paste0("taum", 1:7)
+data <- data %>%
+  mutate(across(all_of(taum_vars), ~ if_else(is.na(.), 0, .)))
+
+# Create tau variables
+for (i in 0:10) {
+  tau_var <- paste0("tau", i)
+  data <- data %>%
+    mutate({{tau_var}} := if_else(tau == i, 1, 0))
+}
+
+# Replace remaining NA values with 0 in tau variables
+tau_vars <- paste0("tau", 0:10)
+data <- data %>%
+  mutate(across(all_of(tau_vars), ~ if_else(is.na(.), 0, .)))
+
+data <- data %>% arrange(state,city, -year)
+
+# Create tauL and tauR variables
+data <- data %>%
+  mutate(
+    tauL = ifelse(tau < -7, 1, 0),
+    tauR = ifelse((tau > 10) & (!is.na(tau)), 1, 0)
+  ) %>% 
+  mutate(
+    tauL = ifelse(is.na(tauL),0, tauL)
+  )
+
+# Perform regression
+reg_model <- lm(do ~ taum7 + taum6 + taum5 + taum4 + taum3 + taum2  +
+                  tau0 + tau1 + tau2 + tau3 + tau4 + tau5 + tau6 + tau7 + tau8 +
+                  tau9 + tau10 + tauL + tauR + lit_urban + pce + cityriver +
+                  factor(year), data = data, weights = pop_urban)
+
+
+# Calculate the clustered standard errors
+clustered_se <- sqrt(diag(vcovHC(reg_model, cluster = ~ cityriver, type = "HC1")))
+
+coefs <- coef(reg_model)
+event_study_data_gh <- data.frame(estimate = coefs, std_error_c = clustered_se)
+event_study_data_gh$term <- row.names(event_study_data_gh)  
+row.names(event_study_data_gh) <- NULL
+
+
+target <- c("taum7","taum6","taum5","taum4","taum3","taum2",
+            "tau0","tau1","tau2","tau3","tau4","tau5","tau6","tau7","tau8",
+            "tau9","tau10")
+
+event_study_data_gh <- event_study_data_gh %>% filter(term %in% target) %>% 
+  mutate(time = c(-7,-6,-5,-4,-3,-2,0,1,2,3,4,5,6,7,8,9,10),
+         lower = estimate - 1.96 * std_error_c,  # 95% confidence interval
+         upper = estimate + 1.96 * std_error_c)
+
+
+###### do Station Level 
+#variable names might be confusing but everything is at stn level
+
+# Read the data
+data <- read_dta("../GH_replication/Greenstone-and-Hanna--2014--Replication Files/Data/Water Data/Final Data/india_waters_stncodeyear.dta")
+
+# Create stnriver variable
+data <- data %>%
+  mutate(cityriver = paste(stncode, river, sep = " "))
+
+# Set missing values for specific variables in 2005
+data <- data %>%
+  mutate(across(starts_with("month_"), ~ if_else(year == 2005, 0, .)))
+
+# Drop temp* variables
+data <- data %>%
+  select(-starts_with("temp"))
+
+# Calculate yap1city, gap1city, gap2city, nrcpcity, dapcity, gomtiap1city
+data <- data %>%
+  group_by(cityriver) %>%
+  mutate(
+    yap1city = max(yap1),
+    gap1city = max(gap1),
+    gap2city = max(gap2),
+    nrcpcity = max(nrcp),
+    dapcity = max(dap),
+    gomtiap1city = max(gomtiap1)
+  )
+
+# Create temp2 variable
+data <- data %>%
+  mutate(temp2 = if_else(nrcpcity == 1, 1995,
+                         if_else(gap1city == 1, 1985,
+                                 if_else(yap1city == 1 | gap2city == 1 |
+                                           dapcity == 1 | gomtiap1city == 1, 
+                                         1993,NA_integer_))))
+
+
+# Calculate temp3 variable
+data <- data %>%
+  group_by(cityriver) %>%
+  mutate(temp3 = min(year, na.rm = TRUE))
+
+
+# Create tau variable
+data <- data %>%
+  mutate(tau = if_else((temp2 > temp3) & 
+                         (!is.na(do)), 
+                       year - temp2,
+                       NA_integer_))
+
+# Create neveradopt variable
+data <- data %>%
+  mutate(neveradopt = if_else(is.na(temp2), 1, 0))
+
+# Create tempx variable
+data <- data %>%
+  mutate(tempx = if_else((yap1 == 1 | gap1 == 1 | gap2 == 1 | 
+                            nrcp == 1 | dap == 1 | gomtiap1 == 1) &
+                           (!is.na(do)), 1, NA_integer_))
+
+# Create tempy variable
+data <- data %>%
+  group_by(cityriver) %>%
+  mutate(
+    tempy = if_else(!is.na(temp2), min(tempx, na.rm = TRUE), NA_integer_)
+  )
+
+# Calculate variables temp4, temp5, Mtemp4, Mtemp5
+data <- data %>%
+  mutate(
+    temp4 = if_else(tau >= 3 & !is.na(tau), 1, 0),
+    temp5 = if_else(tau <= -3 & !is.na(tau), 1, 0))
+
+data <- data %>% group_by(cityriver) %>%
+  mutate(
+    Mtemp4 = max(temp4, na.rm = TRUE),
+    Mtemp5 = max(temp5, na.rm = TRUE))
+
+# Calculate count variable
+data <- data %>%
+  group_by(state, stncode) %>%
+  mutate(count = sum(!is.na(do)))
+
+#Create use variable
+data <- data %>%
+  mutate(
+    use = if_else((Mtemp4 == 1 & Mtemp5 == 1) | (neveradopt == 1 & count > 1),
+                  1,0),
+    one = 1
+  )
+data <- data %>% arrange(state,city, -year)
+
+
+# Keep only the relevant observations
+data <- data %>%
+  filter(use == 1) %>%
+  filter(!is.na(do))
+
+# Create taum variables
+for (i in 7:1) {
+  taum_var <- paste0("taum", i)
+  data <- data %>%
+    mutate({{taum_var}} := if_else(tau == -i, 1, 0))
+}
+
+# Replace remaining NA values with 0 in taum variables
+taum_vars <- paste0("taum", 1:7)
+data <- data %>%
+  mutate(across(all_of(taum_vars), ~ if_else(is.na(.), 0, .)))
+
+# Create tau variables
+for (i in 0:10) {
+  tau_var <- paste0("tau", i)
+  data <- data %>%
+    mutate({{tau_var}} := if_else(tau == i, 1, 0))
+}
+
+# Replace remaining NA values with 0 in tau variables
+tau_vars <- paste0("tau", 0:10)
+data <- data %>%
+  mutate(across(all_of(tau_vars), ~ if_else(is.na(.), 0, .)))
+
+data <- data %>% arrange(state,city, -year)
+
+# Create tauL and tauR variables
+data <- data %>%
+  mutate(
+    tauL = ifelse(tau < -7, 1, 0),
+    tauR = ifelse((tau > 10) & (!is.na(tau)), 1, 0)
+  ) %>% 
+  mutate(
+    tauL = ifelse(is.na(tauL),0, tauL)
+  )
+
+# Perform regression
+reg_model <- lm(do ~ taum7 + taum6 + taum5 + taum4 + taum3 + taum2  +
+                  tau0 + tau1 + tau2 + tau3 + tau4 + tau5 + tau6 + tau7 + tau8 +
+                  tau9 + tau10 + tauL + tauR + lit_urban + pce + cityriver +
+                  factor(year), data = data, weights = pop_urban)
+
+
+# Calculate the clustered standard errors
+clustered_se <- sqrt(diag(vcovHC(reg_model, cluster = ~ cityriver, type = "HC1")))
+
+coefs <- coef(reg_model)
+event_study_data_jb <- data.frame(estimate = coefs, std_error_c = clustered_se)
+event_study_data_jb$term <- row.names(event_study_data_jb)
+row.names(event_study_data_jb) <- NULL
+
+
+target <- c("taum7","taum6","taum5","taum4","taum3","taum2",
+            "tau0","tau1","tau2","tau3","tau4","tau5","tau6","tau7","tau8",
+            "tau9","tau10")
+
+event_study_data_jb <- event_study_data_jb %>% filter(term %in% target) %>% 
+  mutate(time = c(-7,-6,-5,-4,-3,-2,0,1,2,3,4,5,6,7,8,9,10),
+         lower = estimate - 1.96 * std_error_c,  # 95% confidence interval
+         upper = estimate + 1.96 * std_error_c)
+
+# Merge data
+event_study_data_jb$specification <- "JB Specification"
+event_study_data_gh$specification <- "GH Specification"
+
+merged_study_data <- rbind(event_study_data_gh,event_study_data_jb)
+
+# Plot Event study
+es_do <- ggplot(data = merged_study_data, aes(x = time, y = estimate, group = specification)) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "black") +
+  geom_vline(xintercept = -1, linetype = "dashed", color = "black") +
+  geom_point(
+    aes(shape = specification, color = specification),
+    size = 3,
+    position = position_nudge(x = 
+                                ifelse(merged_study_data$specification == "JB Specification", 
+                                       -0.2, 0.2))
+  ) +
+  geom_linerange(
+    aes(ymin = lower, ymax = upper, color = specification),
+    position = position_nudge(x = 
+                                ifelse(merged_study_data$specification == "JB Specification",
+                                       -0.2, 0.2))
+  ) +
+  xlab("Years since NRCP implementation") +
+  ylab("Effect on DO") +
+  theme_minimal() +
+  theme(
+    axis.text = element_text(size = 10),
+    axis.title = element_text(size = 12, face = "bold"),
+    legend.position = "none"
+  ) +
+  scale_x_continuous(
+    breaks = seq(min(merged_study_data$time), max(merged_study_data$time), 
+                 by = 2),
+    labels = seq(min(merged_study_data$time), max(merged_study_data$time), 
+                 by = 2)
+  ) +
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 8))
+
+```
+
+
+```{r, include=FALSE}
+
+
+###### lnfcoli City Level
+
+# Read the data
+data <- read_dta("../GH_replication/Greenstone-and-Hanna--2014--Replication Files/Data/Water Data/Final Data/india_waters_cityyear.dta")
+
+# Create cityriver variable
+data <- data %>%
+  mutate(cityriver = paste(city, river, sep = " "))
+
+# Set missing values for specific variables in 2005
+data <- data %>%
+  mutate(across(starts_with("month_"), ~ if_else(year == 2005, 0, .)))
+
+# Drop temp* variables
+data <- data %>%
+  select(-starts_with("temp"))
+
+# Calculate yap1city, gap1city, gap2city, nrcpcity, dapcity, gomtiap1city
+data <- data %>%
+  group_by(cityriver) %>%
+  mutate(
+    yap1city = max(yap1),
+    gap1city = max(gap1),
+    gap2city = max(gap2),
+    nrcpcity = max(nrcp),
+    dapcity = max(dap),
+    gomtiap1city = max(gomtiap1)
+  )
+
+# Create temp2 variable
+data <- data %>%
+  mutate(temp2 = if_else(nrcpcity == 1, 1995,
+                         if_else(gap1city == 1, 1985,
+                                 if_else(yap1city == 1 | gap2city == 1 |
+                                           dapcity == 1 | gomtiap1city == 1, 
+                                         1993,NA_integer_))))
+
+
+# Calculate temp3 variable
+data <- data %>%
+  group_by(cityriver) %>%
+  mutate(temp3 = min(year, na.rm = TRUE))
+
+
+# Create tau variable
+data <- data %>%
+  mutate(tau = if_else((temp2 > temp3) & 
+                         (!is.na(lnfcoli)), 
+                       year - temp2,
+                       NA_integer_))
+
+# Create neveradopt variable
+data <- data %>%
+  mutate(neveradopt = if_else(is.na(temp2), 1, 0))
+
+# Create tempx variable
+data <- data %>%
+  mutate(tempx = if_else((yap1 == 1 | gap1 == 1 | gap2 == 1 | 
+                            nrcp == 1 | dap == 1 | gomtiap1 == 1) &
+                           (!is.na(lnfcoli)), 1, NA_integer_))
+
+# Create tempy variable
+data <- data %>%
+  group_by(cityriver) %>%
+  mutate(
+    tempy = if_else(!is.na(temp2), min(tempx, na.rm = TRUE), NA_integer_)
+  )
+
+# Calculate variables temp4, temp5, Mtemp4, Mtemp5
+data <- data %>%
+  mutate(
+    temp4 = if_else(tau >= 3 & !is.na(tau), 1, 0),
+    temp5 = if_else(tau <= -3 & !is.na(tau), 1, 0))
+
+data <- data %>% group_by(cityriver) %>%
+  mutate(
+    Mtemp4 = max(temp4, na.rm = TRUE),
+    Mtemp5 = max(temp5, na.rm = TRUE))
+
+# Calculate count variable
+data <- data %>%
+  group_by(state, city) %>%
+  mutate(count = sum(!is.na(lnfcoli)))
+
+#Create use variable
+data <- data %>%
+  mutate(
+    use = if_else((Mtemp4 == 1 & Mtemp5 == 1) | (neveradopt == 1 & count > 1),
+                  1,0),
+    one = 1
+  )
+data <- data %>% arrange(state,city, -year)
+
+
+# Keep only the relevant observations
+data <- data %>%
+  filter(use == 1) %>%
+  filter(!is.na(lnfcoli))
+
+# Create taum variables
+for (i in 7:1) {
+  taum_var <- paste0("taum", i)
+  data <- data %>%
+    mutate({{taum_var}} := if_else(tau == -i, 1, 0))
+}
+
+# Replace remaining NA values with 0 in taum variables
+taum_vars <- paste0("taum", 1:7)
+data <- data %>%
+  mutate(across(all_of(taum_vars), ~ if_else(is.na(.), 0, .)))
+
+# Create tau variables
+for (i in 0:10) {
+  tau_var <- paste0("tau", i)
+  data <- data %>%
+    mutate({{tau_var}} := if_else(tau == i, 1, 0))
+}
+
+# Replace remaining NA values with 0 in tau variables
+tau_vars <- paste0("tau", 0:10)
+data <- data %>%
+  mutate(across(all_of(tau_vars), ~ if_else(is.na(.), 0, .)))
+
+data <- data %>% arrange(state,city, -year)
+
+# Create tauL and tauR variables
+data <- data %>%
+  mutate(
+    tauL = ifelse(tau < -7, 1, 0),
+    tauR = ifelse((tau > 10) & (!is.na(tau)), 1, 0)
+  ) %>% 
+  mutate(
+    tauL = ifelse(is.na(tauL),0, tauL)
+  )
+
+# Perform regression
+reg_model <- lm(lnfcoli ~ taum7 + taum6 + taum5 + taum4 + taum3 + taum2  +
+                  tau0 + tau1 + tau2 + tau3 + tau4 + tau5 + tau6 + tau7 + tau8 +
+                  tau9 + tau10 + tauL + tauR + lit_urban + pce + cityriver +
+                  factor(year), data = data, weights = pop_urban)
+
+
+# Calculate the clustered standard errors
+clustered_se <- sqrt(diag(vcovHC(reg_model, cluster = ~ cityriver, type = "HC1")))
+
+coefs <- coef(reg_model)
+event_study_data_gh <- data.frame(estimate = coefs, std_error_c = clustered_se)
+event_study_data_gh$term <- row.names(event_study_data_gh)  
+row.names(event_study_data_gh) <- NULL
+
+
+target <- c("taum7","taum6","taum5","taum4","taum3","taum2",
+            "tau0","tau1","tau2","tau3","tau4","tau5","tau6","tau7","tau8",
+            "tau9","tau10")
+
+event_study_data_gh <- event_study_data_gh %>% filter(term %in% target) %>% 
+  mutate(time = c(-7,-6,-5,-4,-3,-2,0,1,2,3,4,5,6,7,8,9,10),
+         lower = estimate - 1.96 * std_error_c,  # 95% confidence interval
+         upper = estimate + 1.96 * std_error_c)
+
+
+###### lnfcoli Station Level 
+#variable names might be confusing but everything is at stn level
+
+# Read the data
+data <- read_dta("../GH_replication/Greenstone-and-Hanna--2014--Replication Files/Data/Water Data/Final Data/india_waters_stncodeyear.dta")
+
+# Create stnriver variable
+data <- data %>%
+  mutate(cityriver = paste(stncode, river, sep = " "))
+
+# Set missing values for specific variables in 2005
+data <- data %>%
+  mutate(across(starts_with("month_"), ~ if_else(year == 2005, 0, .)))
+
+# Drop temp* variables
+data <- data %>%
+  select(-starts_with("temp"))
+
+# Calculate yap1city, gap1city, gap2city, nrcpcity, dapcity, gomtiap1city
+data <- data %>%
+  group_by(cityriver) %>%
+  mutate(
+    yap1city = max(yap1),
+    gap1city = max(gap1),
+    gap2city = max(gap2),
+    nrcpcity = max(nrcp),
+    dapcity = max(dap),
+    gomtiap1city = max(gomtiap1)
+  )
+
+# Create temp2 variable
+data <- data %>%
+  mutate(temp2 = if_else(nrcpcity == 1, 1995,
+                         if_else(gap1city == 1, 1985,
+                                 if_else(yap1city == 1 | gap2city == 1 |
+                                           dapcity == 1 | gomtiap1city == 1, 
+                                         1993,NA_integer_))))
+
+
+# Calculate temp3 variable
+data <- data %>%
+  group_by(cityriver) %>%
+  mutate(temp3 = min(year, na.rm = TRUE))
+
+
+# Create tau variable
+data <- data %>%
+  mutate(tau = if_else((temp2 > temp3) & 
+                         (!is.na(lnfcoli)), 
+                       year - temp2,
+                       NA_integer_))
+
+# Create neveradopt variable
+data <- data %>%
+  mutate(neveradopt = if_else(is.na(temp2), 1, 0))
+
+# Create tempx variable
+data <- data %>%
+  mutate(tempx = if_else((yap1 == 1 | gap1 == 1 | gap2 == 1 | 
+                            nrcp == 1 | dap == 1 | gomtiap1 == 1) &
+                           (!is.na(lnfcoli)), 1, NA_integer_))
+
+# Create tempy variable
+data <- data %>%
+  group_by(cityriver) %>%
+  mutate(
+    tempy = if_else(!is.na(temp2), min(tempx, na.rm = TRUE), NA_integer_)
+  )
+
+# Calculate variables temp4, temp5, Mtemp4, Mtemp5
+data <- data %>%
+  mutate(
+    temp4 = if_else(tau >= 3 & !is.na(tau), 1, 0),
+    temp5 = if_else(tau <= -3 & !is.na(tau), 1, 0))
+
+data <- data %>% group_by(cityriver) %>%
+  mutate(
+    Mtemp4 = max(temp4, na.rm = TRUE),
+    Mtemp5 = max(temp5, na.rm = TRUE))
+
+# Calculate count variable
+data <- data %>%
+  group_by(state, stncode) %>%
+  mutate(count = sum(!is.na(lnfcoli)))
+
+#Create use variable
+data <- data %>%
+  mutate(
+    use = if_else((Mtemp4 == 1 & Mtemp5 == 1) | (neveradopt == 1 & count > 1),
+                  1,0),
+    one = 1
+  )
+data <- data %>% arrange(state,city, -year)
+
+
+# Keep only the relevant observations
+data <- data %>%
+  filter(use == 1) %>%
+  filter(!is.na(lnfcoli))
+
+# Create taum variables
+for (i in 7:1) {
+  taum_var <- paste0("taum", i)
+  data <- data %>%
+    mutate({{taum_var}} := if_else(tau == -i, 1, 0))
+}
+
+# Replace remaining NA values with 0 in taum variables
+taum_vars <- paste0("taum", 1:7)
+data <- data %>%
+  mutate(across(all_of(taum_vars), ~ if_else(is.na(.), 0, .)))
+
+# Create tau variables
+for (i in 0:10) {
+  tau_var <- paste0("tau", i)
+  data <- data %>%
+    mutate({{tau_var}} := if_else(tau == i, 1, 0))
+}
+
+# Replace remaining NA values with 0 in tau variables
+tau_vars <- paste0("tau", 0:10)
+data <- data %>%
+  mutate(across(all_of(tau_vars), ~ if_else(is.na(.), 0, .)))
+
+data <- data %>% arrange(state,city, -year)
+
+# Create tauL and tauR variables
+data <- data %>%
+  mutate(
+    tauL = ifelse(tau < -7, 1, 0),
+    tauR = ifelse((tau > 10) & (!is.na(tau)), 1, 0)
+  ) %>% 
+  mutate(
+    tauL = ifelse(is.na(tauL),0, tauL)
+  )
+
+# Perform regression
+reg_model <- lm(lnfcoli ~ taum7 + taum6 + taum5 + taum4 + taum3 + taum2  +
+                  tau0 + tau1 + tau2 + tau3 + tau4 + tau5 + tau6 + tau7 + tau8 +
+                  tau9 + tau10 + tauL + tauR + lit_urban + pce + cityriver +
+                  factor(year), data = data, weights = pop_urban)
+
+
+# Calculate the clustered standard errors
+clustered_se <- sqrt(diag(vcovHC(reg_model, cluster = ~ cityriver, type = "HC1")))
+
+coefs <- coef(reg_model)
+event_study_data_jb <- data.frame(estimate = coefs, std_error_c = clustered_se)
+event_study_data_jb$term <- row.names(event_study_data_jb)
+row.names(event_study_data_jb) <- NULL
+
+
+target <- c("taum7","taum6","taum5","taum4","taum3","taum2",
+            "tau0","tau1","tau2","tau3","tau4","tau5","tau6","tau7","tau8",
+            "tau9","tau10")
+
+event_study_data_jb <- event_study_data_jb %>% filter(term %in% target) %>% 
+  mutate(time = c(-7,-6,-5,-4,-3,-2,0,1,2,3,4,5,6,7,8,9,10),
+         lower = estimate - 1.96 * std_error_c,  # 95% confidence interval
+         upper = estimate + 1.96 * std_error_c)
+
+# Merge data
+event_study_data_jb$specification <- "JB Specification"
+event_study_data_gh$specification <- "GH Specification"
+
+merged_study_data <- rbind(event_study_data_gh,event_study_data_jb)
+
+# Plot Event study
+es_fcoli <- ggplot(data = merged_study_data, aes(x = time, y = estimate, group = specification)) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "black") +
+  geom_vline(xintercept = -1, linetype = "dashed", color = "black") +
+  geom_point(
+    aes(shape = specification, color = specification),
+    size = 3,
+    position = position_nudge(x = 
+                                ifelse(merged_study_data$specification == "JB Specification", 
+                                       -0.2, 0.2))
+  ) +
+  geom_linerange(
+    aes(ymin = lower, ymax = upper, color = specification),
+    position = position_nudge(x = 
+                                ifelse(merged_study_data$specification == "JB Specification",
+                                       -0.2, 0.2))
+  ) +
+  xlab("Years since NRCP implementation") +
+  ylab("Effect on ln(FColi)") +
+  theme_minimal() +
+  theme(
+    axis.text = element_text(size = 10),
+    axis.title = element_text(size = 12, face = "bold"),
+    legend.position = "none"
+  ) +
+  scale_x_continuous(
+    breaks = seq(min(merged_study_data$time), max(merged_study_data$time), 
+                 by = 2),
+    labels = seq(min(merged_study_data$time), max(merged_study_data$time), 
+                 by = 2)
+  ) +
+  scale_y_continuous(breaks = scales::pretty_breaks(8))
+```
+
+```{r echo=FALSE, fig.cap="\\label{fig:plot2} Event Study of Water Policy", message=FALSE, warning=FALSE, fig.height= 10, fig.width= 10}
+# Arrange the plots in one column with three rows
+grid.arrange(es_bod, es_do, es_fcoli, ncol = 1, bottom = "Notes: The figures show an event study plot from the estimation of equations (3) --GH Specification-- and \n (4) --JB Specification-- using yearly city-level data and yearly station-level data respectively. City, river\n and time fixed effects were included in GH Specification. Station, river and time fixed effects were \nincluded in JB Specification. Standard errors were clustered at the city-river level and \nstation-river level respectively.")
+
+```
+
+
+```{r, include=FALSE}
+################## disaggregated sample
+###### BOD City Level
+
+# Read the data
+data <- read_dta("../GH_replication/Greenstone-and-Hanna--2014--Replication Files/Data/Water Data/Final Data/india_waters.dta")
+
+# Create cityriver variable
+data <- data %>%
+  mutate(cityriver = paste(city, river, sep = " "))
+
+# Set missing values for specific variables in 2005
+data <- data %>%
+  mutate(across(starts_with("month_"), ~ if_else(year == 2005, 0, .)))
+
+# Drop temp* variables
+data <- data %>%
+  select(-starts_with("temp"))
+
+# Calculate yap1city, gap1city, gap2city, nrcpcity, dapcity, gomtiap1city
+data <- data %>%
+  group_by(cityriver) %>%
+  mutate(
+    yap1city = max(yap1),
+    gap1city = max(gap1),
+    gap2city = max(gap2),
+    nrcpcity = max(nrcp),
+    dapcity = max(dap),
+    gomtiap1city = max(gomtiap1)
+  )
+
+# Create temp2 variable
+data <- data %>%
+  mutate(temp2 = if_else(nrcpcity == 1, 1995,
+                         if_else(gap1city == 1, 1985,
+                                 if_else(yap1city == 1 | gap2city == 1 |
+                                           dapcity == 1 | gomtiap1city == 1, 
+                                         1993,NA_integer_))))
+
+
+# Calculate temp3 variable
+data <- data %>%
+  group_by(cityriver) %>%
+  mutate(temp3 = min(year, na.rm = TRUE))
+
+
+# Create tau variable
+data <- data %>%
+  mutate(tau = if_else((temp2 > temp3) & 
+                         (!is.na(bod)), 
+                       year - temp2,
+                       NA_integer_))
+
+# Create neveradopt variable
+data <- data %>%
+  mutate(neveradopt = if_else(is.na(temp2), 1, 0))
+
+# Create tempx variable
+data <- data %>%
+  mutate(tempx = if_else((yap1 == 1 | gap1 == 1 | gap2 == 1 | 
+                            nrcp == 1 | dap == 1 | gomtiap1 == 1) &
+                           (!is.na(bod)), 1, NA_integer_))
+
+# Create tempy variable
+data <- data %>%
+  group_by(cityriver) %>%
+  mutate(
+    tempy = if_else(!is.na(temp2), min(tempx, na.rm = TRUE), NA_integer_)
+  )
+
+# Calculate variables temp4, temp5, Mtemp4, Mtemp5
+data <- data %>%
+  mutate(
+    temp4 = if_else(tau >= 3 & !is.na(tau), 1, 0),
+    temp5 = if_else(tau <= -3 & !is.na(tau), 1, 0))
+
+data <- data %>% group_by(cityriver) %>%
+  mutate(
+    Mtemp4 = max(temp4, na.rm = TRUE),
+    Mtemp5 = max(temp5, na.rm = TRUE))
+
+# Calculate count variable
+data <- data %>%
+  group_by(state, city) %>%
+  mutate(count = sum(!is.na(bod)))
+
+#Create use variable
+data <- data %>%
+  mutate(
+    use = if_else((Mtemp4 == 1 & Mtemp5 == 1) | (neveradopt == 1 & count > 1),
+                  1,0),
+    one = 1
+  )
+data <- data %>% arrange(state,city, -year)
+
+
+# Keep only the relevant observations
+data <- data %>%
+  filter(use == 1) %>%
+  filter(!is.na(bod))
+
+# Create taum variables
+for (i in 7:1) {
+  taum_var <- paste0("taum", i)
+  data <- data %>%
+    mutate({{taum_var}} := if_else(tau == -i, 1, 0))
+}
+
+# Replace remaining NA values with 0 in taum variables
+taum_vars <- paste0("taum", 1:7)
+data <- data %>%
+  mutate(across(all_of(taum_vars), ~ if_else(is.na(.), 0, .)))
+
+# Create tau variables
+for (i in 0:10) {
+  tau_var <- paste0("tau", i)
+  data <- data %>%
+    mutate({{tau_var}} := if_else(tau == i, 1, 0))
+}
+
+# Replace remaining NA values with 0 in tau variables
+tau_vars <- paste0("tau", 0:10)
+data <- data %>%
+  mutate(across(all_of(tau_vars), ~ if_else(is.na(.), 0, .)))
+
+data <- data %>% arrange(state,city, -year)
+
+# Create tauL and tauR variables
+data <- data %>%
+  mutate(
+    tauL = ifelse(tau < -7, 1, 0),
+    tauR = ifelse((tau > 10) & (!is.na(tau)), 1, 0)
+  ) %>% 
+  mutate(
+    tauL = ifelse(is.na(tauL),0, tauL)
+  )
+
+# Perform regression
+reg_model <- lm(bod ~ taum7 + taum6 + taum5 + taum4 + taum3 + taum2  +
+                  tau0 + tau1 + tau2 + tau3 + tau4 + tau5 + tau6 + tau7 + tau8 +
+                  tau9 + tau10 + tauL + tauR + lit_urban + pce + cityriver +
+                  factor(year), data = data, weights = pop_urban)
+
+
+# Calculate the clustered standard errors
+clustered_se <- sqrt(diag(vcovHC(reg_model, cluster = ~ cityriver, type = "HC1")))
+
+coefs <- coef(reg_model)
+event_study_data_gh <- data.frame(estimate = coefs, std_error_c = clustered_se)
+event_study_data_gh$term <- row.names(event_study_data_gh)  
+row.names(event_study_data_gh) <- NULL
+
+
+target <- c("taum7","taum6","taum5","taum4","taum3","taum2",
+            "tau0","tau1","tau2","tau3","tau4","tau5","tau6","tau7","tau8",
+            "tau9","tau10")
+
+event_study_data_gh <- event_study_data_gh %>% filter(term %in% target) %>% 
+  mutate(time = c(-7,-6,-5,-4,-3,-2,0,1,2,3,4,5,6,7,8,9,10),
+         lower = estimate - 1.96 * std_error_c,  # 95% confidence interval
+         upper = estimate + 1.96 * std_error_c)
+
+
+###### BOD Station Level 
+#variable names might be confusing but everything is at stn level
+
+# Read the data
+data <- read_dta("../GH_replication/Greenstone-and-Hanna--2014--Replication Files/Data/Water Data/Final Data/india_waters.dta")
+
+# Create stnriver variable
+data <- data %>%
+  mutate(cityriver = paste(stncode, river, sep = " "))
+
+# Set missing values for specific variables in 2005
+data <- data %>%
+  mutate(across(starts_with("month_"), ~ if_else(year == 2005, 0, .)))
+
+# Drop temp* variables
+data <- data %>%
+  select(-starts_with("temp"))
+
+# Calculate yap1city, gap1city, gap2city, nrcpcity, dapcity, gomtiap1city
+data <- data %>%
+  group_by(cityriver) %>%
+  mutate(
+    yap1city = max(yap1),
+    gap1city = max(gap1),
+    gap2city = max(gap2),
+    nrcpcity = max(nrcp),
+    dapcity = max(dap),
+    gomtiap1city = max(gomtiap1)
+  )
+
+# Create temp2 variable
+data <- data %>%
+  mutate(temp2 = if_else(nrcpcity == 1, 1995,
+                         if_else(gap1city == 1, 1985,
+                                 if_else(yap1city == 1 | gap2city == 1 |
+                                           dapcity == 1 | gomtiap1city == 1, 
+                                         1993,NA_integer_))))
+
+
+# Calculate temp3 variable
+data <- data %>%
+  group_by(cityriver) %>%
+  mutate(temp3 = min(year, na.rm = TRUE))
+
+
+# Create tau variable
+data <- data %>%
+  mutate(tau = if_else((temp2 > temp3) & 
+                         (!is.na(bod)), 
+                       year - temp2,
+                       NA_integer_))
+
+# Create neveradopt variable
+data <- data %>%
+  mutate(neveradopt = if_else(is.na(temp2), 1, 0))
+
+# Create tempx variable
+data <- data %>%
+  mutate(tempx = if_else((yap1 == 1 | gap1 == 1 | gap2 == 1 | 
+                            nrcp == 1 | dap == 1 | gomtiap1 == 1) &
+                           (!is.na(bod)), 1, NA_integer_))
+
+# Create tempy variable
+data <- data %>%
+  group_by(cityriver) %>%
+  mutate(
+    tempy = if_else(!is.na(temp2), min(tempx, na.rm = TRUE), NA_integer_)
+  )
+
+# Calculate variables temp4, temp5, Mtemp4, Mtemp5
+data <- data %>%
+  mutate(
+    temp4 = if_else(tau >= 3 & !is.na(tau), 1, 0),
+    temp5 = if_else(tau <= -3 & !is.na(tau), 1, 0))
+
+data <- data %>% group_by(cityriver) %>%
+  mutate(
+    Mtemp4 = max(temp4, na.rm = TRUE),
+    Mtemp5 = max(temp5, na.rm = TRUE))
+
+# Calculate count variable
+data <- data %>%
+  group_by(state, stncode) %>%
+  mutate(count = sum(!is.na(bod)))
+
+#Create use variable
+data <- data %>%
+  mutate(
+    use = if_else((Mtemp4 == 1 & Mtemp5 == 1) | (neveradopt == 1 & count > 1),
+                  1,0),
+    one = 1
+  )
+data <- data %>% arrange(state,city, -year)
+
+
+# Keep only the relevant observations
+data <- data %>%
+  filter(use == 1) %>%
+  filter(!is.na(bod))
+
+# Create taum variables
+for (i in 7:1) {
+  taum_var <- paste0("taum", i)
+  data <- data %>%
+    mutate({{taum_var}} := if_else(tau == -i, 1, 0))
+}
+
+# Replace remaining NA values with 0 in taum variables
+taum_vars <- paste0("taum", 1:7)
+data <- data %>%
+  mutate(across(all_of(taum_vars), ~ if_else(is.na(.), 0, .)))
+
+# Create tau variables
+for (i in 0:10) {
+  tau_var <- paste0("tau", i)
+  data <- data %>%
+    mutate({{tau_var}} := if_else(tau == i, 1, 0))
+}
+
+# Replace remaining NA values with 0 in tau variables
+tau_vars <- paste0("tau", 0:10)
+data <- data %>%
+  mutate(across(all_of(tau_vars), ~ if_else(is.na(.), 0, .)))
+
+data <- data %>% arrange(state,city, -year)
+
+# Create tauL and tauR variables
+data <- data %>%
+  mutate(
+    tauL = ifelse(tau < -7, 1, 0),
+    tauR = ifelse((tau > 10) & (!is.na(tau)), 1, 0)
+  ) %>% 
+  mutate(
+    tauL = ifelse(is.na(tauL),0, tauL)
+  )
+
+# Perform regression
+reg_model <- lm(bod ~ taum7 + taum6 + taum5 + taum4 + taum3 + taum2  +
+                  tau0 + tau1 + tau2 + tau3 + tau4 + tau5 + tau6 + tau7 + tau8 +
+                  tau9 + tau10 + tauL + tauR + lit_urban + pce + cityriver +
+                  factor(year), data = data, weights = pop_urban)
+
+
+# Calculate the clustered standard errors
+clustered_se <- sqrt(diag(vcovHC(reg_model, cluster = ~ cityriver, type = "HC1")))
+
+coefs <- coef(reg_model)
+event_study_data_jb <- data.frame(estimate = coefs, std_error_c = clustered_se)
+event_study_data_jb$term <- row.names(event_study_data_jb)
+row.names(event_study_data_jb) <- NULL
+
+
+target <- c("taum7","taum6","taum5","taum4","taum3","taum2",
+            "tau0","tau1","tau2","tau3","tau4","tau5","tau6","tau7","tau8",
+            "tau9","tau10")
+
+event_study_data_jb <- event_study_data_jb %>% filter(term %in% target) %>% 
+  mutate(time = c(-7,-6,-5,-4,-3,-2,0,1,2,3,4,5,6,7,8,9,10),
+         lower = estimate - 1.96 * std_error_c,  # 95% confidence interval
+         upper = estimate + 1.96 * std_error_c)
+
+# Merge data
+event_study_data_jb$specification <- "JB Specification"
+event_study_data_gh$specification <- "GH Specification"
+
+merged_study_data <- rbind(event_study_data_gh,event_study_data_jb)
+
+# Plot Event study
+es_bod <- ggplot(data = merged_study_data, aes(x = time, y = estimate, group = specification)) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "black") +
+  geom_vline(xintercept = -1, linetype = "dashed", color = "black") +
+  geom_point(
+    aes(shape = specification, color = specification),
+    size = 3,
+    position = position_nudge(x = 
+                                ifelse(merged_study_data$specification == "JB Specification", 
+                                       -0.2, 0.2))
+  ) +
+  geom_linerange(
+    aes(ymin = lower, ymax = upper, color = specification),
+    position = position_nudge(x = 
+                                ifelse(merged_study_data$specification == "JB Specification",
+                                       -0.2, 0.2))
+  ) +
+  xlab("Years since NRCP implementation") +
+  ylab("Effect on BOD") +
+  theme_minimal() +
+  theme(
+    axis.text = element_text(size = 10),
+    axis.title = element_text(size = 12, face = "bold"),
+    legend.position = "none"
+  ) +
+  scale_x_continuous(
+    breaks = seq(min(merged_study_data$time), max(merged_study_data$time), 
+                 by = 2),
+    labels = seq(min(merged_study_data$time), max(merged_study_data$time), 
+                 by = 2)
+  ) +
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 8)) +
+  geom_text(
+    data = merged_study_data %>% distinct(specification, .keep_all = TRUE),
+    aes(x = 8, y = c(12, 11.5), label = specification, color = specification),
+    hjust = 0,
+    vjust = c(0, 1),
+    show.legend = FALSE
+  )
+
+
+###### DO City Level
+
+# Read the data
+data <- read_dta("../GH_replication/Greenstone-and-Hanna--2014--Replication Files/Data/Water Data/Final Data/india_waters.dta")
+
+# Create cityriver variable
+data <- data %>%
+  mutate(cityriver = paste(city, river, sep = " "))
+
+# Set missing values for specific variables in 2005
+data <- data %>%
+  mutate(across(starts_with("month_"), ~ if_else(year == 2005, 0, .)))
+
+# Drop temp* variables
+data <- data %>%
+  select(-starts_with("temp"))
+
+# Calculate yap1city, gap1city, gap2city, nrcpcity, dapcity, gomtiap1city
+data <- data %>%
+  group_by(cityriver) %>%
+  mutate(
+    yap1city = max(yap1),
+    gap1city = max(gap1),
+    gap2city = max(gap2),
+    nrcpcity = max(nrcp),
+    dapcity = max(dap),
+    gomtiap1city = max(gomtiap1)
+  )
+
+# Create temp2 variable
+data <- data %>%
+  mutate(temp2 = if_else(nrcpcity == 1, 1995,
+                         if_else(gap1city == 1, 1985,
+                                 if_else(yap1city == 1 | gap2city == 1 |
+                                           dapcity == 1 | gomtiap1city == 1, 
+                                         1993,NA_integer_))))
+
+
+# Calculate temp3 variable
+data <- data %>%
+  group_by(cityriver) %>%
+  mutate(temp3 = min(year, na.rm = TRUE))
+
+
+# Create tau variable
+data <- data %>%
+  mutate(tau = if_else((temp2 > temp3) & 
+                         (!is.na(do)), 
+                       year - temp2,
+                       NA_integer_))
+
+# Create neveradopt variable
+data <- data %>%
+  mutate(neveradopt = if_else(is.na(temp2), 1, 0))
+
+# Create tempx variable
+data <- data %>%
+  mutate(tempx = if_else((yap1 == 1 | gap1 == 1 | gap2 == 1 | 
+                            nrcp == 1 | dap == 1 | gomtiap1 == 1) &
+                           (!is.na(do)), 1, NA_integer_))
+
+# Create tempy variable
+data <- data %>%
+  group_by(cityriver) %>%
+  mutate(
+    tempy = if_else(!is.na(temp2), min(tempx, na.rm = TRUE), NA_integer_)
+  )
+
+# Calculate variables temp4, temp5, Mtemp4, Mtemp5
+data <- data %>%
+  mutate(
+    temp4 = if_else(tau >= 3 & !is.na(tau), 1, 0),
+    temp5 = if_else(tau <= -3 & !is.na(tau), 1, 0))
+
+data <- data %>% group_by(cityriver) %>%
+  mutate(
+    Mtemp4 = max(temp4, na.rm = TRUE),
+    Mtemp5 = max(temp5, na.rm = TRUE))
+
+# Calculate count variable
+data <- data %>%
+  group_by(state, city) %>%
+  mutate(count = sum(!is.na(do)))
+
+#Create use variable
+data <- data %>%
+  mutate(
+    use = if_else((Mtemp4 == 1 & Mtemp5 == 1) | (neveradopt == 1 & count > 1),
+                  1,0),
+    one = 1
+  )
+data <- data %>% arrange(state,city, -year)
+
+
+# Keep only the relevant observations
+data <- data %>%
+  filter(use == 1) %>%
+  filter(!is.na(do))
+
+# Create taum variables
+for (i in 7:1) {
+  taum_var <- paste0("taum", i)
+  data <- data %>%
+    mutate({{taum_var}} := if_else(tau == -i, 1, 0))
+}
+
+# Replace remaining NA values with 0 in taum variables
+taum_vars <- paste0("taum", 1:7)
+data <- data %>%
+  mutate(across(all_of(taum_vars), ~ if_else(is.na(.), 0, .)))
+
+# Create tau variables
+for (i in 0:10) {
+  tau_var <- paste0("tau", i)
+  data <- data %>%
+    mutate({{tau_var}} := if_else(tau == i, 1, 0))
+}
+
+# Replace remaining NA values with 0 in tau variables
+tau_vars <- paste0("tau", 0:10)
+data <- data %>%
+  mutate(across(all_of(tau_vars), ~ if_else(is.na(.), 0, .)))
+
+data <- data %>% arrange(state,city, -year)
+
+# Create tauL and tauR variables
+data <- data %>%
+  mutate(
+    tauL = ifelse(tau < -7, 1, 0),
+    tauR = ifelse((tau > 10) & (!is.na(tau)), 1, 0)
+  ) %>% 
+  mutate(
+    tauL = ifelse(is.na(tauL),0, tauL)
+  )
+
+# Perform regression
+reg_model <- lm(do ~ taum7 + taum6 + taum5 + taum4 + taum3 + taum2  +
+                  tau0 + tau1 + tau2 + tau3 + tau4 + tau5 + tau6 + tau7 + tau8 +
+                  tau9 + tau10 + tauL + tauR + lit_urban + pce + cityriver +
+                  factor(year), data = data, weights = pop_urban)
+
+
+# Calculate the clustered standard errors
+clustered_se <- sqrt(diag(vcovHC(reg_model, cluster = ~ cityriver, type = "HC1")))
+
+coefs <- coef(reg_model)
+event_study_data_gh <- data.frame(estimate = coefs, std_error_c = clustered_se)
+event_study_data_gh$term <- row.names(event_study_data_gh)  
+row.names(event_study_data_gh) <- NULL
+
+
+target <- c("taum7","taum6","taum5","taum4","taum3","taum2",
+            "tau0","tau1","tau2","tau3","tau4","tau5","tau6","tau7","tau8",
+            "tau9","tau10")
+
+event_study_data_gh <- event_study_data_gh %>% filter(term %in% target) %>% 
+  mutate(time = c(-7,-6,-5,-4,-3,-2,0,1,2,3,4,5,6,7,8,9,10),
+         lower = estimate - 1.96 * std_error_c,  # 95% confidence interval
+         upper = estimate + 1.96 * std_error_c)
+
+
+###### do Station Level 
+#variable names might be confusing but everything is at stn level
+
+# Read the data
+data <- read_dta("../GH_replication/Greenstone-and-Hanna--2014--Replication Files/Data/Water Data/Final Data/india_waters.dta")
+
+# Create stnriver variable
+data <- data %>%
+  mutate(cityriver = paste(stncode, river, sep = " "))
+
+# Set missing values for specific variables in 2005
+data <- data %>%
+  mutate(across(starts_with("month_"), ~ if_else(year == 2005, 0, .)))
+
+# Drop temp* variables
+data <- data %>%
+  select(-starts_with("temp"))
+
+# Calculate yap1city, gap1city, gap2city, nrcpcity, dapcity, gomtiap1city
+data <- data %>%
+  group_by(cityriver) %>%
+  mutate(
+    yap1city = max(yap1),
+    gap1city = max(gap1),
+    gap2city = max(gap2),
+    nrcpcity = max(nrcp),
+    dapcity = max(dap),
+    gomtiap1city = max(gomtiap1)
+  )
+
+# Create temp2 variable
+data <- data %>%
+  mutate(temp2 = if_else(nrcpcity == 1, 1995,
+                         if_else(gap1city == 1, 1985,
+                                 if_else(yap1city == 1 | gap2city == 1 |
+                                           dapcity == 1 | gomtiap1city == 1, 
+                                         1993,NA_integer_))))
+
+
+# Calculate temp3 variable
+data <- data %>%
+  group_by(cityriver) %>%
+  mutate(temp3 = min(year, na.rm = TRUE))
+
+
+# Create tau variable
+data <- data %>%
+  mutate(tau = if_else((temp2 > temp3) & 
+                         (!is.na(do)), 
+                       year - temp2,
+                       NA_integer_))
+
+# Create neveradopt variable
+data <- data %>%
+  mutate(neveradopt = if_else(is.na(temp2), 1, 0))
+
+# Create tempx variable
+data <- data %>%
+  mutate(tempx = if_else((yap1 == 1 | gap1 == 1 | gap2 == 1 | 
+                            nrcp == 1 | dap == 1 | gomtiap1 == 1) &
+                           (!is.na(do)), 1, NA_integer_))
+
+# Create tempy variable
+data <- data %>%
+  group_by(cityriver) %>%
+  mutate(
+    tempy = if_else(!is.na(temp2), min(tempx, na.rm = TRUE), NA_integer_)
+  )
+
+# Calculate variables temp4, temp5, Mtemp4, Mtemp5
+data <- data %>%
+  mutate(
+    temp4 = if_else(tau >= 3 & !is.na(tau), 1, 0),
+    temp5 = if_else(tau <= -3 & !is.na(tau), 1, 0))
+
+data <- data %>% group_by(cityriver) %>%
+  mutate(
+    Mtemp4 = max(temp4, na.rm = TRUE),
+    Mtemp5 = max(temp5, na.rm = TRUE))
+
+# Calculate count variable
+data <- data %>%
+  group_by(state, stncode) %>%
+  mutate(count = sum(!is.na(do)))
+
+#Create use variable
+data <- data %>%
+  mutate(
+    use = if_else((Mtemp4 == 1 & Mtemp5 == 1) | (neveradopt == 1 & count > 1),
+                  1,0),
+    one = 1
+  )
+data <- data %>% arrange(state,city, -year)
+
+
+# Keep only the relevant observations
+data <- data %>%
+  filter(use == 1) %>%
+  filter(!is.na(do))
+
+# Create taum variables
+for (i in 7:1) {
+  taum_var <- paste0("taum", i)
+  data <- data %>%
+    mutate({{taum_var}} := if_else(tau == -i, 1, 0))
+}
+
+# Replace remaining NA values with 0 in taum variables
+taum_vars <- paste0("taum", 1:7)
+data <- data %>%
+  mutate(across(all_of(taum_vars), ~ if_else(is.na(.), 0, .)))
+
+# Create tau variables
+for (i in 0:10) {
+  tau_var <- paste0("tau", i)
+  data <- data %>%
+    mutate({{tau_var}} := if_else(tau == i, 1, 0))
+}
+
+# Replace remaining NA values with 0 in tau variables
+tau_vars <- paste0("tau", 0:10)
+data <- data %>%
+  mutate(across(all_of(tau_vars), ~ if_else(is.na(.), 0, .)))
+
+data <- data %>% arrange(state,city, -year)
+
+# Create tauL and tauR variables
+data <- data %>%
+  mutate(
+    tauL = ifelse(tau < -7, 1, 0),
+    tauR = ifelse((tau > 10) & (!is.na(tau)), 1, 0)
+  ) %>% 
+  mutate(
+    tauL = ifelse(is.na(tauL),0, tauL)
+  )
+
+# Perform regression
+reg_model <- lm(do ~ taum7 + taum6 + taum5 + taum4 + taum3 + taum2  +
+                  tau0 + tau1 + tau2 + tau3 + tau4 + tau5 + tau6 + tau7 + tau8 +
+                  tau9 + tau10 + tauL + tauR + lit_urban + pce + cityriver +
+                  factor(year), data = data, weights = pop_urban)
+
+
+# Calculate the clustered standard errors
+clustered_se <- sqrt(diag(vcovHC(reg_model, cluster = ~ cityriver, type = "HC1")))
+
+coefs <- coef(reg_model)
+event_study_data_jb <- data.frame(estimate = coefs, std_error_c = clustered_se)
+event_study_data_jb$term <- row.names(event_study_data_jb)
+row.names(event_study_data_jb) <- NULL
+
+
+target <- c("taum7","taum6","taum5","taum4","taum3","taum2",
+            "tau0","tau1","tau2","tau3","tau4","tau5","tau6","tau7","tau8",
+            "tau9","tau10")
+
+event_study_data_jb <- event_study_data_jb %>% filter(term %in% target) %>% 
+  mutate(time = c(-7,-6,-5,-4,-3,-2,0,1,2,3,4,5,6,7,8,9,10),
+         lower = estimate - 1.96 * std_error_c,  # 95% confidence interval
+         upper = estimate + 1.96 * std_error_c)
+
+# Merge data
+event_study_data_jb$specification <- "JB Specification"
+event_study_data_gh$specification <- "GH Specification"
+
+merged_study_data <- rbind(event_study_data_gh,event_study_data_jb)
+
+# Plot Event study
+es_do <- ggplot(data = merged_study_data, aes(x = time, y = estimate, group = specification)) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "black") +
+  geom_vline(xintercept = -1, linetype = "dashed", color = "black") +
+  geom_point(
+    aes(shape = specification, color = specification),
+    size = 3,
+    position = position_nudge(x = 
+                                ifelse(merged_study_data$specification == "JB Specification", 
+                                       -0.2, 0.2))
+  ) +
+  geom_linerange(
+    aes(ymin = lower, ymax = upper, color = specification),
+    position = position_nudge(x = 
+                                ifelse(merged_study_data$specification == "JB Specification",
+                                       -0.2, 0.2))
+  ) +
+  xlab("Years since NRCP implementation") +
+  ylab("Effect on DO") +
+  theme_minimal() +
+  theme(
+    axis.text = element_text(size = 10),
+    axis.title = element_text(size = 12, face = "bold"),
+    legend.position = "none"
+  ) +
+  scale_x_continuous(
+    breaks = seq(min(merged_study_data$time), max(merged_study_data$time), 
+                 by = 2),
+    labels = seq(min(merged_study_data$time), max(merged_study_data$time), 
+                 by = 2)
+  ) +
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 8))
+
+
+
+###### lnfcoli City Level
+
+# Read the data
+data <- read_dta("../GH_replication/Greenstone-and-Hanna--2014--Replication Files/Data/Water Data/Final Data/india_waters.dta")
+
+# Create cityriver variable
+data <- data %>%
+  mutate(cityriver = paste(city, river, sep = " "))
+
+# Set missing values for specific variables in 2005
+data <- data %>%
+  mutate(across(starts_with("month_"), ~ if_else(year == 2005, 0, .)))
+
+# Drop temp* variables
+data <- data %>%
+  select(-starts_with("temp"))
+
+# Calculate yap1city, gap1city, gap2city, nrcpcity, dapcity, gomtiap1city
+data <- data %>%
+  group_by(cityriver) %>%
+  mutate(
+    yap1city = max(yap1),
+    gap1city = max(gap1),
+    gap2city = max(gap2),
+    nrcpcity = max(nrcp),
+    dapcity = max(dap),
+    gomtiap1city = max(gomtiap1)
+  )
+
+# Create temp2 variable
+data <- data %>%
+  mutate(temp2 = if_else(nrcpcity == 1, 1995,
+                         if_else(gap1city == 1, 1985,
+                                 if_else(yap1city == 1 | gap2city == 1 |
+                                           dapcity == 1 | gomtiap1city == 1, 
+                                         1993,NA_integer_))))
+
+
+# Calculate temp3 variable
+data <- data %>%
+  group_by(cityriver) %>%
+  mutate(temp3 = min(year, na.rm = TRUE))
+
+
+# Create tau variable
+data <- data %>%
+  mutate(tau = if_else((temp2 > temp3) & 
+                         (!is.na(lnfcoli)), 
+                       year - temp2,
+                       NA_integer_))
+
+# Create neveradopt variable
+data <- data %>%
+  mutate(neveradopt = if_else(is.na(temp2), 1, 0))
+
+# Create tempx variable
+data <- data %>%
+  mutate(tempx = if_else((yap1 == 1 | gap1 == 1 | gap2 == 1 | 
+                            nrcp == 1 | dap == 1 | gomtiap1 == 1) &
+                           (!is.na(lnfcoli)), 1, NA_integer_))
+
+# Create tempy variable
+data <- data %>%
+  group_by(cityriver) %>%
+  mutate(
+    tempy = if_else(!is.na(temp2), min(tempx, na.rm = TRUE), NA_integer_)
+  )
+
+# Calculate variables temp4, temp5, Mtemp4, Mtemp5
+data <- data %>%
+  mutate(
+    temp4 = if_else(tau >= 3 & !is.na(tau), 1, 0),
+    temp5 = if_else(tau <= -3 & !is.na(tau), 1, 0))
+
+data <- data %>% group_by(cityriver) %>%
+  mutate(
+    Mtemp4 = max(temp4, na.rm = TRUE),
+    Mtemp5 = max(temp5, na.rm = TRUE))
+
+# Calculate count variable
+data <- data %>%
+  group_by(state, city) %>%
+  mutate(count = sum(!is.na(lnfcoli)))
+
+#Create use variable
+data <- data %>%
+  mutate(
+    use = if_else((Mtemp4 == 1 & Mtemp5 == 1) | (neveradopt == 1 & count > 1),
+                  1,0),
+    one = 1
+  )
+data <- data %>% arrange(state,city, -year)
+
+
+# Keep only the relevant observations
+data <- data %>%
+  filter(use == 1) %>%
+  filter(!is.na(lnfcoli))
+
+# Create taum variables
+for (i in 7:1) {
+  taum_var <- paste0("taum", i)
+  data <- data %>%
+    mutate({{taum_var}} := if_else(tau == -i, 1, 0))
+}
+
+# Replace remaining NA values with 0 in taum variables
+taum_vars <- paste0("taum", 1:7)
+data <- data %>%
+  mutate(across(all_of(taum_vars), ~ if_else(is.na(.), 0, .)))
+
+# Create tau variables
+for (i in 0:10) {
+  tau_var <- paste0("tau", i)
+  data <- data %>%
+    mutate({{tau_var}} := if_else(tau == i, 1, 0))
+}
+
+# Replace remaining NA values with 0 in tau variables
+tau_vars <- paste0("tau", 0:10)
+data <- data %>%
+  mutate(across(all_of(tau_vars), ~ if_else(is.na(.), 0, .)))
+
+data <- data %>% arrange(state,city, -year)
+
+# Create tauL and tauR variables
+data <- data %>%
+  mutate(
+    tauL = ifelse(tau < -7, 1, 0),
+    tauR = ifelse((tau > 10) & (!is.na(tau)), 1, 0)
+  ) %>% 
+  mutate(
+    tauL = ifelse(is.na(tauL),0, tauL)
+  )
+
+# Perform regression
+reg_model <- lm(lnfcoli ~ taum7 + taum6 + taum5 + taum4 + taum3 + taum2  +
+                  tau0 + tau1 + tau2 + tau3 + tau4 + tau5 + tau6 + tau7 + tau8 +
+                  tau9 + tau10 + tauL + tauR + lit_urban + pce + cityriver +
+                  factor(year), data = data, weights = pop_urban)
+
+
+# Calculate the clustered standard errors
+clustered_se <- sqrt(diag(vcovHC(reg_model, cluster = ~ cityriver, type = "HC1")))
+
+coefs <- coef(reg_model)
+event_study_data_gh <- data.frame(estimate = coefs, std_error_c = clustered_se)
+event_study_data_gh$term <- row.names(event_study_data_gh)  
+row.names(event_study_data_gh) <- NULL
+
+
+target <- c("taum7","taum6","taum5","taum4","taum3","taum2",
+            "tau0","tau1","tau2","tau3","tau4","tau5","tau6","tau7","tau8",
+            "tau9","tau10")
+
+event_study_data_gh <- event_study_data_gh %>% filter(term %in% target) %>% 
+  mutate(time = c(-7,-6,-5,-4,-3,-2,0,1,2,3,4,5,6,7,8,9,10),
+         lower = estimate - 1.96 * std_error_c,  # 95% confidence interval
+         upper = estimate + 1.96 * std_error_c)
+
+
+###### lnfcoli Station Level 
+#variable names might be confusing but everything is at stn level
+
+# Read the data
+data <- read_dta("../GH_replication/Greenstone-and-Hanna--2014--Replication Files/Data/Water Data/Final Data/india_waters.dta")
+
+# Create stnriver variable
+data <- data %>%
+  mutate(cityriver = paste(stncode, river, sep = " "))
+
+# Set missing values for specific variables in 2005
+data <- data %>%
+  mutate(across(starts_with("month_"), ~ if_else(year == 2005, 0, .)))
+
+# Drop temp* variables
+data <- data %>%
+  select(-starts_with("temp"))
+
+# Calculate yap1city, gap1city, gap2city, nrcpcity, dapcity, gomtiap1city
+data <- data %>%
+  group_by(cityriver) %>%
+  mutate(
+    yap1city = max(yap1),
+    gap1city = max(gap1),
+    gap2city = max(gap2),
+    nrcpcity = max(nrcp),
+    dapcity = max(dap),
+    gomtiap1city = max(gomtiap1)
+  )
+
+# Create temp2 variable
+data <- data %>%
+  mutate(temp2 = if_else(nrcpcity == 1, 1995,
+                         if_else(gap1city == 1, 1985,
+                                 if_else(yap1city == 1 | gap2city == 1 |
+                                           dapcity == 1 | gomtiap1city == 1, 
+                                         1993,NA_integer_))))
+
+
+# Calculate temp3 variable
+data <- data %>%
+  group_by(cityriver) %>%
+  mutate(temp3 = min(year, na.rm = TRUE))
+
+
+# Create tau variable
+data <- data %>%
+  mutate(tau = if_else((temp2 > temp3) & 
+                         (!is.na(lnfcoli)), 
+                       year - temp2,
+                       NA_integer_))
+
+# Create neveradopt variable
+data <- data %>%
+  mutate(neveradopt = if_else(is.na(temp2), 1, 0))
+
+# Create tempx variable
+data <- data %>%
+  mutate(tempx = if_else((yap1 == 1 | gap1 == 1 | gap2 == 1 | 
+                            nrcp == 1 | dap == 1 | gomtiap1 == 1) &
+                           (!is.na(lnfcoli)), 1, NA_integer_))
+
+# Create tempy variable
+data <- data %>%
+  group_by(cityriver) %>%
+  mutate(
+    tempy = if_else(!is.na(temp2), min(tempx, na.rm = TRUE), NA_integer_)
+  )
+
+# Calculate variables temp4, temp5, Mtemp4, Mtemp5
+data <- data %>%
+  mutate(
+    temp4 = if_else(tau >= 3 & !is.na(tau), 1, 0),
+    temp5 = if_else(tau <= -3 & !is.na(tau), 1, 0))
+
+data <- data %>% group_by(cityriver) %>%
+  mutate(
+    Mtemp4 = max(temp4, na.rm = TRUE),
+    Mtemp5 = max(temp5, na.rm = TRUE))
+
+# Calculate count variable
+data <- data %>%
+  group_by(state, stncode) %>%
+  mutate(count = sum(!is.na(lnfcoli)))
+
+#Create use variable
+data <- data %>%
+  mutate(
+    use = if_else((Mtemp4 == 1 & Mtemp5 == 1) | (neveradopt == 1 & count > 1),
+                  1,0),
+    one = 1
+  )
+data <- data %>% arrange(state,city, -year)
+
+
+# Keep only the relevant observations
+data <- data %>%
+  filter(use == 1) %>%
+  filter(!is.na(lnfcoli))
+
+# Create taum variables
+for (i in 7:1) {
+  taum_var <- paste0("taum", i)
+  data <- data %>%
+    mutate({{taum_var}} := if_else(tau == -i, 1, 0))
+}
+
+# Replace remaining NA values with 0 in taum variables
+taum_vars <- paste0("taum", 1:7)
+data <- data %>%
+  mutate(across(all_of(taum_vars), ~ if_else(is.na(.), 0, .)))
+
+# Create tau variables
+for (i in 0:10) {
+  tau_var <- paste0("tau", i)
+  data <- data %>%
+    mutate({{tau_var}} := if_else(tau == i, 1, 0))
+}
+
+# Replace remaining NA values with 0 in tau variables
+tau_vars <- paste0("tau", 0:10)
+data <- data %>%
+  mutate(across(all_of(tau_vars), ~ if_else(is.na(.), 0, .)))
+
+data <- data %>% arrange(state,city, -year)
+
+# Create tauL and tauR variables
+data <- data %>%
+  mutate(
+    tauL = ifelse(tau < -7, 1, 0),
+    tauR = ifelse((tau > 10) & (!is.na(tau)), 1, 0)
+  ) %>% 
+  mutate(
+    tauL = ifelse(is.na(tauL),0, tauL)
+  )
+
+# Perform regression
+reg_model <- lm(lnfcoli ~ taum7 + taum6 + taum5 + taum4 + taum3 + taum2  +
+                  tau0 + tau1 + tau2 + tau3 + tau4 + tau5 + tau6 + tau7 + tau8 +
+                  tau9 + tau10 + tauL + tauR + lit_urban + pce + cityriver +
+                  factor(year), data = data, weights = pop_urban)
+
+
+# Calculate the clustered standard errors
+clustered_se <- sqrt(diag(vcovHC(reg_model, cluster = ~ cityriver, type = "HC1")))
+
+coefs <- coef(reg_model)
+event_study_data_jb <- data.frame(estimate = coefs, std_error_c = clustered_se)
+event_study_data_jb$term <- row.names(event_study_data_jb)
+row.names(event_study_data_jb) <- NULL
+
+
+target <- c("taum7","taum6","taum5","taum4","taum3","taum2",
+            "tau0","tau1","tau2","tau3","tau4","tau5","tau6","tau7","tau8",
+            "tau9","tau10")
+
+event_study_data_jb <- event_study_data_jb %>% filter(term %in% target) %>% 
+  mutate(time = c(-7,-6,-5,-4,-3,-2,0,1,2,3,4,5,6,7,8,9,10),
+         lower = estimate - 1.96 * std_error_c,  # 95% confidence interval
+         upper = estimate + 1.96 * std_error_c)
+
+# Merge data
+event_study_data_jb$specification <- "JB Specification"
+event_study_data_gh$specification <- "GH Specification"
+
+merged_study_data <- rbind(event_study_data_gh,event_study_data_jb)
+
+# Plot Event study
+es_fcoli <- ggplot(data = merged_study_data, aes(x = time, y = estimate, group = specification)) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "black") +
+  geom_vline(xintercept = -1, linetype = "dashed", color = "black") +
+  geom_point(
+    aes(shape = specification, color = specification),
+    size = 3,
+    position = position_nudge(x = 
+                                ifelse(merged_study_data$specification == "JB Specification", 
+                                       -0.2, 0.2))
+  ) +
+  geom_linerange(
+    aes(ymin = lower, ymax = upper, color = specification),
+    position = position_nudge(x = 
+                                ifelse(merged_study_data$specification == "JB Specification",
+                                       -0.2, 0.2))
+  ) +
+  xlab("Years since NRCP implementation") +
+  ylab("Effect on ln(FColi)") +
+  theme_minimal() +
+  theme(
+    axis.text = element_text(size = 10),
+    axis.title = element_text(size = 12, face = "bold"),
+    legend.position = "none"
+  ) +
+  scale_x_continuous(
+    breaks = seq(min(merged_study_data$time), max(merged_study_data$time), 
+                 by = 2),
+    labels = seq(min(merged_study_data$time), max(merged_study_data$time), 
+                 by = 2)
+  ) +
+  scale_y_continuous(breaks = scales::pretty_breaks(8))
+
+```
+
+```{r echo=FALSE, fig.cap="\\label{fig:plot3} Event Study of Water Policy Using Dissaggregated Data", message=FALSE, warning=FALSE, fig.height= 10, fig.width= 10}
+# Arrange the plots in one column with three rows
+grid.arrange(es_bod, es_do, es_fcoli, ncol = 1, bottom = "Notes: The figures show an event study plot from the estimation of equations (3) --GH Specification-- and \n (4) --JB Specification-- using disaggregated station-level for both specifications. City, river and time fixed effects were \n included for GH Specification. Station, river and time fixed effects were included for JB Specification. \nStandard errors were clustered at the city-river level and station-river level respectively.")
+```
+
+## Future Work {#id3.3}
+
+The results presented in the event study plots do not appear to be conclusive regarding the effectiveness of the NRCP. It would be interesting to expand the analysis further to understand how the negative spillover effects change with the introduction of this policy. GH does not mention the risks to their analysis due to spillovers. The stable unit treatment value assumption (SUTVA), necessary in DiD designs, implies no unmodeled spillovers. We can consider that if the NRCP was implemented in a main river located in a basin, other secondary rivers could be affected due to the extensive river interconnection present in India (see Figure \ref{fig:plot4} in Appendix^[Figure showing India's river system. Data was obtained from: Lehner, B., Grill G. (2013). Global river hydrography and network routing: baseline data and new approaches to study the world’s large river systems. Hydrological Processes, 27(15): 2171–2186. https://doi.org/10.1002/hyp.9740. Replication code for the map can be found in the following path:code/map.R]).
+
+
+A possible specification to model these spillovers could be as follows:
+
+\begin{equation}
+\label{eq:5}
+Y_{it}^{downstream} = \alpha + \sum_{\tau} \sigma_{\tau} \bm{D}_{\tau,it} + \bm{Y}_{it}^{upstream} +  \mu_t + \gamma_i + \beta \bm{X}_{it} + \epsilon_{it}
+\end{equation}
+
+Where $Y^{j}_{i,t}$ with superscript $j \in \{downstream, upstream\}$ represents one of the pollution indicators reported at the corresponding downstream or upstream station in station pair $i$ at year $t$. A large proportion of the pollution reported in downstream stations (i.e., $Y^{downstream}_{i,t}$) can be explained by the accumulated pollution along the river and reported by its upstream peer station (i.e., $Y^{upstream}_{i,t}$). This is why I include the pollution level reported upstream, $Y^{upstream}_{i,t}$ as an independent variable. The rest of the equation is practically the same as equations (\ref{eq:4}), but now the observations would be at the station-pair level.
+
+To obtain data at the station-pair level, it is necessary to determine the precise location of each station to identify which stations are on the same river. Subsequently, we could determine which stations are upstream or downstream using a Digital Elevation Model (DEM). In @barrutia_alvarez_we_2021, I explain in more detail the steps to obtain the elevation level of each monitoring station and thus determine the direction of river flow.
+
+The GH's dataset indicates the stations' coordinates and the river they are located in. However, when plotting the stations on a map, I noticed that some stations are outside the boundaries of India (see Figure \ref{fig:plot5} in the Appendix). Herefore, it is only necessary to confirm the location of the stations to carry out this analysis.
+
+# Conclusion {#id4}
+
+Both the results obtained with GH's original specification and the results obtained with the JB specification and more disaggregated data are very similar. The expansions to the analysis conducted in this paper serve to confirm the authors' original findings. The NRCP has not been successful in reducing pollution in the rivers of India. If anything, we can observe a deterioration in BOD levels in the years following the implementation of the policy.
+
+Expanding the analysis to model spillovers and obtain heterogeneous treatment effects in this context could provide us with a better understanding of the effects of the NRCP. With the evidence presented so far, it appears that the policy did not achieve the expected results. 
+
+When implementing policies in transboundary water bodies, it is crucial to seek the cooperation of all involved parties in order to align interests and encourage upstream jurisdictions to undertake costly actions to prevent the transfer of pollutants to downstream jurisdictions.
+
+# References {-}
+
+<div id="refs"></div>
+
+\appendix
+
+# Appendix {#idA}
+
+
+```{r table_a, results = "asis", message = FALSE, echo=FALSE, warning = FALSE}
+# Read the data
+data <- read_dta("../GH_replication/Greenstone-and-Hanna--2014--Replication Files/Data/Water Data/Final Data/india_waters_cityyear.dta")
+
+# Create cityriver variable
+data <- data %>%
+  mutate(cityriver = paste(city, river, sep = " "))
+
+# Set missing values for specific variables in 2005
+data <- data %>%
+  mutate(across(starts_with("month_"), ~ if_else(year == 2005, 0, .)))
+
+# Drop temp* variables
+data <- data %>%
+  select(-starts_with("temp"))
+
+# Calculate yap1city, gap1city, gap2city, nrcpcity, dapcity, gomtiap1city
+data <- data %>%
+  group_by(cityriver) %>%
+  mutate(
+    yap1city = max(yap1),
+    gap1city = max(gap1),
+    gap2city = max(gap2),
+    nrcpcity = max(nrcp),
+    dapcity = max(dap),
+    gomtiap1city = max(gomtiap1)
+  )
+
+# Create temp2 variable
+data <- data %>%
+  mutate(temp2 = if_else(nrcpcity == 1, 1995,
+                         if_else(gap1city == 1, 1985,
+                         if_else(yap1city == 1 | gap2city == 1 | dapcity == 1 | gomtiap1city == 1, 
+                                 1993,NA_integer_))))
+
+# Calculate temp3 variable
+data <- data %>%
+  group_by(cityriver) %>%
+  mutate(temp3 = min(year, na.rm = TRUE))
+
+
+# Create tau variable
+data <- data %>%
+  mutate(tau = if_else((temp2 > temp3) & 
+                         (!is.na(bod) | !is.na(do) | !is.na(lnfcoli)), 
+                       year - temp2,
+                       NA_integer_))
+
+# Create neveradopt variable
+data <- data %>%
+  mutate(neveradopt = if_else(is.na(temp2), 1, 0))
+
+# Create tempx variable
+data <- data %>%
+  mutate(tempx = if_else((yap1 == 1 | gap1 == 1 | gap2 == 1 | nrcp == 1 | dap == 1 | gomtiap1 == 1) &
+                           (!is.na(bod) | !is.na(lnfcoli) | !is.na(do)), 1, 0))
+
+# Create tempy variable
+data <- data %>%
+  group_by(cityriver) %>%
+  mutate(
+    tempy = if_else(!is.na(temp2), min(tempx, na.rm = TRUE), NA_integer_)
+  )
+
+# Calculate variables temp4, temp5, Mtemp4, Mtemp5
+data <- data %>%
+  mutate(
+    temp4 = if_else(tau >= 3 & !is.na(tau), 1, 0),
+    temp5 = if_else(tau <= -3 & !is.na(tau), 1, 0))
+
+data <- data %>% group_by(cityriver) %>%
+  mutate(
+    Mtemp4 = max(temp4, na.rm = TRUE),
+    Mtemp5 = max(temp5, na.rm = TRUE),
+    use = (Mtemp4 == 1 & Mtemp5 == 1) | neveradopt == 1
+  )
+
+data <- data %>%
+  mutate(
+    use = if_else((Mtemp4 == 1 & Mtemp5 == 1) | neveradopt == 1,
+                  1,0)
+)
+
+# Keep only the relevant observations
+data <- data %>%
+  filter(use == 1) %>%
+  filter(!is.na(bod) | !is.na(do) | !is.na(lnfcoli))
+
+# Calculate count and cityno variables
+data <- data %>%
+  group_by(state, city) %>%
+  mutate(
+    count = row_number(),
+    cityno = max(count, na.rm = TRUE)
+  )
+
+# Drop cities with cityno less than 2
+data <- data %>%
+  filter(cityno >= 2)
+
+# Create df for tables
+data_bod <- data %>%  ungroup() %>% filter(!is.na(bod)) %>% 
+  select(year, city, bod) %>% 
+  group_by(year) %>% 
+  summarize(Cities = n(), 
+            Mean = round(mean(bod),2), 
+            Median = round(median(bod),2), 
+            `Std. Dev.` = round(sd(bod),2) )
+
+data_do <- data %>%  ungroup() %>% filter(!is.na(do)) %>% 
+  select(year, city, do) %>% 
+  group_by(year) %>% 
+  summarize(Cities = n(), 
+            Mean = round(mean(do),2), 
+            Median = round(median(do),2), 
+            `Std. Dev.` = round(sd(do),2) )
+
+
+data_lnfcoli <- data %>%  ungroup() %>% filter(!is.na(lnfcoli)) %>% 
+  select(year, city, lnfcoli) %>% 
+  group_by(year) %>% 
+  summarize(Cities = n(), 
+            Mean = round(mean(lnfcoli),2), 
+            Median = round(median(lnfcoli),2), 
+            `Std. Dev.` = round(sd(lnfcoli),2) )
+
+merged_data <- left_join(data_bod, data_do, by = "year") %>%
+  left_join(data_lnfcoli, by = "year")
+
+note <-"Summary statistics of corresponding indicator at the city level sample. Cities' Columns show the number of cities with available BOD, DO or ln(FColi) measurements on the corresponding year. Columns Mean, Median, and Std. Dev calculate the corresponding statistic across all cities each year."
+
+k_desc <- kable(merged_data, format = "latex", booktabs = TRUE, align = "c",
+             linesep = "",
+             caption = "Water Quality Descriptive Statistics City-Level",
+             col.names = c("Year", "Cities", "Mean", "Median", "Std. Dev.",
+                         "Cities", "Mean", "Median", "Std. Dev.",
+                         "Cities", "Mean", "Median", "Std. Dev."))
+
+k_desc %>% 
+  add_header_above(c(" " = 1,
+                     "BOD"= 4,
+                     "DO"= 4,
+                     "ln(FColi)"= 4)) %>% 
+  kable_styling(latex_options="scale_down") %>% 
+  footnote(general = note, threeparttable = T, escape = F, footnote_as_chunk = T ) %>% 
+  kable_styling(latex_options = "HOLD_position")
+  
+```
+
+
+```{r table_b, results = "asis", message = FALSE, echo=FALSE, warning = FALSE}
+
+# Read the data
+data <- read_dta("../GH_replication/Greenstone-and-Hanna--2014--Replication Files/Data/Water Data/Final Data/india_waters_stncodeyear.dta")
+
+# Create stationriver variable
+data <- data %>%
+  mutate(stationriver = paste(stncode, river, sep = " "))
+
+# Set missing values for specific variables in 2005
+data <- data %>%
+  mutate(across(starts_with("month_"), ~ if_else(year == 2005, 0, .)))
+
+# Drop temp* variables
+data <- data %>%
+  select(-starts_with("temp"))
+
+# Calculate yap1city, gap1city, gap2city, nrcpcity, dapcity, gomtiap1city
+data <- data %>%
+  group_by(stationriver) %>%
+  mutate(
+    yap1city = max(yap1),
+    gap1city = max(gap1),
+    gap2city = max(gap2),
+    nrcpcity = max(nrcp),
+    dapcity = max(dap),
+    gomtiap1city = max(gomtiap1)
+  )
+
+# Create temp2 variable
+data <- data %>%
+  mutate(temp2 = if_else(nrcpcity == 1, 1995,
+                         if_else(gap1city == 1, 1985,
+                                 if_else(yap1city == 1 | gap2city == 1 | 
+                                           dapcity == 1 | gomtiap1city == 1, 
+                                         1993,NA_integer_))))
+
+# Calculate temp3 variable
+data <- data %>%
+  group_by(stationriver) %>%
+  mutate(temp3 = min(year, na.rm = TRUE))
+
+
+# Create tau variable
+data <- data %>%
+  mutate(tau = if_else((temp2 > temp3) & 
+                         (!is.na(bod) | !is.na(do) | !is.na(lnfcoli)), 
+                       year - temp2,
+                       NA_integer_))
+
+# Create neveradopt variable
+data <- data %>%
+  mutate(neveradopt = if_else(is.na(temp2), 1, 0))
+
+# Create tempx variable
+data <- data %>%
+  mutate(tempx = if_else((yap1 == 1 | gap1 == 1 | gap2 == 1 | 
+                            nrcp == 1 | dap == 1 | gomtiap1 == 1) &
+                           (!is.na(bod) | !is.na(lnfcoli) | !is.na(do)), 1, 0))
+
+# Create tempy variable
+data <- data %>%
+  group_by(stationriver) %>%
+  mutate(
+    tempy = if_else(!is.na(temp2), min(tempx, na.rm = TRUE), NA_integer_)
+  )
+
+# Calculate variables temp4, temp5, Mtemp4, Mtemp5
+data <- data %>%
+  mutate(
+    temp4 = if_else(tau >= 3 & !is.na(tau), 1, 0),
+    temp5 = if_else(tau <= -3 & !is.na(tau), 1, 0))
+
+data <- data %>% group_by(stationriver) %>%
+  mutate(
+    Mtemp4 = max(temp4, na.rm = TRUE),
+    Mtemp5 = max(temp5, na.rm = TRUE),
+    use = (Mtemp4 == 1 & Mtemp5 == 1) | neveradopt == 1
+  )
+
+data <- data %>%
+  mutate(
+    use = if_else((Mtemp4 == 1 & Mtemp5 == 1) | neveradopt == 1,
+                  1,0)
+  )
+
+# Keep only the relevant observations
+data <- data %>%
+  filter(use == 1) %>%
+  filter(!is.na(bod) | !is.na(do) | !is.na(lnfcoli))
+
+# Calculate count and cityno variables for stations, 
+#variable name might be confusing it should be stationno
+data <- data %>%
+  group_by(city, stncode) %>%
+  mutate(
+    count = row_number(),
+    cityno = max(count, na.rm = TRUE)
+  )
+
+# Drop stations with cityno less than 2
+data <- data %>%
+  filter(cityno >= 2)
+
+# Create df for tables
+data_bod <- data %>%  ungroup() %>% filter(!is.na(bod)) %>% 
+  select(year, city, bod) %>% 
+  group_by(year) %>% 
+  summarize(Stations = n(), 
+            Mean = round(mean(bod),2), 
+            Median = round(median(bod),2), 
+            `Std. Dev.` = round(sd(bod),2) )
+
+data_do <- data %>%  ungroup() %>% filter(!is.na(do)) %>% 
+  select(year, city, do) %>% 
+  group_by(year) %>% 
+  summarize(Stations = n(), 
+            Mean = round(mean(do),2), 
+            Median = round(median(do),2), 
+            `Std. Dev.` = round(sd(do),2) )
+
+
+data_lnfcoli <- data %>%  ungroup() %>% filter(!is.na(lnfcoli)) %>% 
+  select(year, city, lnfcoli) %>% 
+  group_by(year) %>% 
+  summarize(Stations = n(), 
+            Mean = round(mean(lnfcoli),2), 
+            Median = round(median(lnfcoli),2), 
+            `Std. Dev.` = round(sd(lnfcoli),2) )
+
+merged_data <- left_join(data_bod, data_do, by = "year") %>%
+  left_join(data_lnfcoli, by = "year")
+
+note <-"Summary statistics of corresponding indicator at the station level sample. Stations' Columns show the number of stations with available BOD, DO or ln(FColi) measurements on the corresponding year. Columns Mean, Median, and Std. Dev calculate the corresponding statistic across all stations each year."
+
+k_desc <- kable(merged_data, format = "latex", booktabs = TRUE, align = "c",
+             linesep = "",
+             caption = "Water Quality Descriptive Statistics Station-Level",
+             col.names = c("Year", "Stations", "Mean", "Median", "Std. Dev.",
+                         "Stations", "Mean", "Median", "Std. Dev.",
+                         "Stations", "Mean", "Median", "Std. Dev."))
+
+k_desc %>% 
+  add_header_above(c(" " = 1,
+                     "BOD"= 4,
+                     "DO"= 4,
+                     "ln(FColi)"= 4)) %>% 
+  kable_styling(latex_options="scale_down") %>% 
+  footnote(general = note, threeparttable = T, escape = F, footnote_as_chunk = T ) %>% 
+  kable_styling(latex_options = "HOLD_position")
+  
+```
+
+
+
+
+```{r, include=FALSE}
+################## disaggregated sample
+###### BOD City Level
+
+# Read the data
+data <- read_dta("../GH_replication/Greenstone-and-Hanna--2014--Replication Files/Data/Water Data/Final Data/india_waters.dta")
+
+# Create cityriver variable
+data <- data %>%
+  mutate(cityriver = paste(city, river, sep = " "))
+
+# Set missing values for specific variables in 2005
+data <- data %>%
+  mutate(across(starts_with("month_"), ~ if_else(year == 2005, 0, .)))
+
+# Drop temp* variables
+data <- data %>%
+  select(-starts_with("temp"))
+
+# Calculate yap1city, gap1city, gap2city, nrcpcity, dapcity, gomtiap1city
+data <- data %>%
+  group_by(cityriver) %>%
+  mutate(
+    yap1city = max(yap1),
+    gap1city = max(gap1),
+    gap2city = max(gap2),
+    nrcpcity = max(nrcp),
+    dapcity = max(dap),
+    gomtiap1city = max(gomtiap1)
+  )
+
+# Create temp2 variable
+data <- data %>%
+  mutate(temp2 = if_else(nrcpcity == 1, 1995,
+                         if_else(gap1city == 1, 1985,
+                                 if_else(yap1city == 1 | gap2city == 1 |
+                                           dapcity == 1 | gomtiap1city == 1, 
+                                         1993,NA_integer_))))
+
+
+# Calculate temp3 variable
+data <- data %>%
+  group_by(cityriver) %>%
+  mutate(temp3 = min(year, na.rm = TRUE))
+
+
+# Create tau variable
+data <- data %>%
+  mutate(tau = if_else((temp2 > temp3) & 
+                         (!is.na(bod)), 
+                       year - temp2,
+                       NA_integer_))
+
+# Create neveradopt variable
+data <- data %>%
+  mutate(neveradopt = if_else(is.na(temp2), 1, 0))
+
+# Create tempx variable
+data <- data %>%
+  mutate(tempx = if_else((yap1 == 1 | gap1 == 1 | gap2 == 1 | 
+                            nrcp == 1 | dap == 1 | gomtiap1 == 1) &
+                           (!is.na(bod)), 1, NA_integer_))
+
+# Create tempy variable
+data <- data %>%
+  group_by(cityriver) %>%
+  mutate(
+    tempy = if_else(!is.na(temp2), min(tempx, na.rm = TRUE), NA_integer_)
+  )
+
+# Calculate variables temp4, temp5, Mtemp4, Mtemp5
+data <- data %>%
+  mutate(
+    temp4 = if_else(tau >= 3 & !is.na(tau), 1, 0),
+    temp5 = if_else(tau <= -3 & !is.na(tau), 1, 0))
+
+data <- data %>% group_by(cityriver) %>%
+  mutate(
+    Mtemp4 = max(temp4, na.rm = TRUE),
+    Mtemp5 = max(temp5, na.rm = TRUE))
+
+# Calculate count variable
+data <- data %>%
+  group_by(state, city) %>%
+  mutate(count = sum(!is.na(bod)))
+
+#Create use variable
+data <- data %>%
+  mutate(
+    use = if_else((Mtemp4 == 1 & Mtemp5 == 1) | (neveradopt == 1 & count > 1),
+                  1,0),
+    one = 1
+  )
+data <- data %>% arrange(state,city, -year)
+
+
+# Keep only the relevant observations
+data <- data %>%
+  filter(use == 1) %>%
+  filter(!is.na(bod))
+
+# Create taum variables
+for (i in 7:1) {
+  taum_var <- paste0("taum", i)
+  data <- data %>%
+    mutate({{taum_var}} := if_else(tau == -i, 1, 0))
+}
+
+# Replace remaining NA values with 0 in taum variables
+taum_vars <- paste0("taum", 1:7)
+data <- data %>%
+  mutate(across(all_of(taum_vars), ~ if_else(is.na(.), 0, .)))
+
+# Create tau variables
+for (i in 0:10) {
+  tau_var <- paste0("tau", i)
+  data <- data %>%
+    mutate({{tau_var}} := if_else(tau == i, 1, 0))
+}
+
+# Replace remaining NA values with 0 in tau variables
+tau_vars <- paste0("tau", 0:10)
+data <- data %>%
+  mutate(across(all_of(tau_vars), ~ if_else(is.na(.), 0, .)))
+
+data <- data %>% arrange(state,city, -year)
+
+# Create tauL and tauR variables
+data <- data %>%
+  mutate(
+    tauL = ifelse(tau < -7, 1, 0),
+    tauR = ifelse((tau > 10) & (!is.na(tau)), 1, 0)
+  ) %>% 
+  mutate(
+    tauL = ifelse(is.na(tauL),0, tauL)
+  )
+
+# Perform regression
+reg_model <- lm(log(bod) ~ taum7 + taum6 + taum5 + taum4 + taum3 + taum2  +
+                  tau0 + tau1 + tau2 + tau3 + tau4 + tau5 + tau6 + tau7 + tau8 +
+                  tau9 + tau10 + tauL + tauR + lit_urban + pce + cityriver +
+                  factor(year), data = data, weights = pop_urban)
+
+
+# Calculate the clustered standard errors
+clustered_se <- sqrt(diag(vcovHC(reg_model, cluster = ~ cityriver, type = "HC1")))
+
+coefs <- coef(reg_model)
+event_study_data_gh <- data.frame(estimate = coefs, std_error_c = clustered_se)
+event_study_data_gh$term <- row.names(event_study_data_gh)  
+row.names(event_study_data_gh) <- NULL
+
+
+target <- c("taum7","taum6","taum5","taum4","taum3","taum2",
+            "tau0","tau1","tau2","tau3","tau4","tau5","tau6","tau7","tau8",
+            "tau9","tau10")
+
+event_study_data_gh <- event_study_data_gh %>% filter(term %in% target) %>% 
+  mutate(time = c(-7,-6,-5,-4,-3,-2,0,1,2,3,4,5,6,7,8,9,10),
+         lower = estimate - 1.96 * std_error_c,  # 95% confidence interval
+         upper = estimate + 1.96 * std_error_c)
+
+
+###### BOD Station Level 
+#variable names might be confusing but everything is at stn level
+
+# Read the data
+data <- read_dta("../GH_replication/Greenstone-and-Hanna--2014--Replication Files/Data/Water Data/Final Data/india_waters.dta")
+
+# Create stnriver variable
+data <- data %>%
+  mutate(cityriver = paste(stncode, river, sep = " "))
+
+# Set missing values for specific variables in 2005
+data <- data %>%
+  mutate(across(starts_with("month_"), ~ if_else(year == 2005, 0, .)))
+
+# Drop temp* variables
+data <- data %>%
+  select(-starts_with("temp"))
+
+# Calculate yap1city, gap1city, gap2city, nrcpcity, dapcity, gomtiap1city
+data <- data %>%
+  group_by(cityriver) %>%
+  mutate(
+    yap1city = max(yap1),
+    gap1city = max(gap1),
+    gap2city = max(gap2),
+    nrcpcity = max(nrcp),
+    dapcity = max(dap),
+    gomtiap1city = max(gomtiap1)
+  )
+
+# Create temp2 variable
+data <- data %>%
+  mutate(temp2 = if_else(nrcpcity == 1, 1995,
+                         if_else(gap1city == 1, 1985,
+                                 if_else(yap1city == 1 | gap2city == 1 |
+                                           dapcity == 1 | gomtiap1city == 1, 
+                                         1993,NA_integer_))))
+
+
+# Calculate temp3 variable
+data <- data %>%
+  group_by(cityriver) %>%
+  mutate(temp3 = min(year, na.rm = TRUE))
+
+
+# Create tau variable
+data <- data %>%
+  mutate(tau = if_else((temp2 > temp3) & 
+                         (!is.na(bod)), 
+                       year - temp2,
+                       NA_integer_))
+
+# Create neveradopt variable
+data <- data %>%
+  mutate(neveradopt = if_else(is.na(temp2), 1, 0))
+
+# Create tempx variable
+data <- data %>%
+  mutate(tempx = if_else((yap1 == 1 | gap1 == 1 | gap2 == 1 | 
+                            nrcp == 1 | dap == 1 | gomtiap1 == 1) &
+                           (!is.na(bod)), 1, NA_integer_))
+
+# Create tempy variable
+data <- data %>%
+  group_by(cityriver) %>%
+  mutate(
+    tempy = if_else(!is.na(temp2), min(tempx, na.rm = TRUE), NA_integer_)
+  )
+
+# Calculate variables temp4, temp5, Mtemp4, Mtemp5
+data <- data %>%
+  mutate(
+    temp4 = if_else(tau >= 3 & !is.na(tau), 1, 0),
+    temp5 = if_else(tau <= -3 & !is.na(tau), 1, 0))
+
+data <- data %>% group_by(cityriver) %>%
+  mutate(
+    Mtemp4 = max(temp4, na.rm = TRUE),
+    Mtemp5 = max(temp5, na.rm = TRUE))
+
+# Calculate count variable
+data <- data %>%
+  group_by(state, stncode) %>%
+  mutate(count = sum(!is.na(bod)))
+
+#Create use variable
+data <- data %>%
+  mutate(
+    use = if_else((Mtemp4 == 1 & Mtemp5 == 1) | (neveradopt == 1 & count > 1),
+                  1,0),
+    one = 1
+  )
+data <- data %>% arrange(state,city, -year)
+
+
+# Keep only the relevant observations
+data <- data %>%
+  filter(use == 1) %>%
+  filter(!is.na(bod))
+
+# Create taum variables
+for (i in 7:1) {
+  taum_var <- paste0("taum", i)
+  data <- data %>%
+    mutate({{taum_var}} := if_else(tau == -i, 1, 0))
+}
+
+# Replace remaining NA values with 0 in taum variables
+taum_vars <- paste0("taum", 1:7)
+data <- data %>%
+  mutate(across(all_of(taum_vars), ~ if_else(is.na(.), 0, .)))
+
+# Create tau variables
+for (i in 0:10) {
+  tau_var <- paste0("tau", i)
+  data <- data %>%
+    mutate({{tau_var}} := if_else(tau == i, 1, 0))
+}
+
+# Replace remaining NA values with 0 in tau variables
+tau_vars <- paste0("tau", 0:10)
+data <- data %>%
+  mutate(across(all_of(tau_vars), ~ if_else(is.na(.), 0, .)))
+
+data <- data %>% arrange(state,city, -year)
+
+# Create tauL and tauR variables
+data <- data %>%
+  mutate(
+    tauL = ifelse(tau < -7, 1, 0),
+    tauR = ifelse((tau > 10) & (!is.na(tau)), 1, 0)
+  ) %>% 
+  mutate(
+    tauL = ifelse(is.na(tauL),0, tauL)
+  )
+
+# Perform regression
+reg_model <- lm(log(bod) ~ taum7 + taum6 + taum5 + taum4 + taum3 + taum2  +
+                  tau0 + tau1 + tau2 + tau3 + tau4 + tau5 + tau6 + tau7 + tau8 +
+                  tau9 + tau10 + tauL + tauR + lit_urban + pce + cityriver +
+                  factor(year), data = data, weights = pop_urban)
+
+
+# Calculate the clustered standard errors
+clustered_se <- sqrt(diag(vcovHC(reg_model, cluster = ~ cityriver, type = "HC1")))
+
+coefs <- coef(reg_model)
+event_study_data_jb <- data.frame(estimate = coefs, std_error_c = clustered_se)
+event_study_data_jb$term <- row.names(event_study_data_jb)
+row.names(event_study_data_jb) <- NULL
+
+
+target <- c("taum7","taum6","taum5","taum4","taum3","taum2",
+            "tau0","tau1","tau2","tau3","tau4","tau5","tau6","tau7","tau8",
+            "tau9","tau10")
+
+event_study_data_jb <- event_study_data_jb %>% filter(term %in% target) %>% 
+  mutate(time = c(-7,-6,-5,-4,-3,-2,0,1,2,3,4,5,6,7,8,9,10),
+         lower = estimate - 1.96 * std_error_c,  # 95% confidence interval
+         upper = estimate + 1.96 * std_error_c)
+
+# Merge data
+event_study_data_jb$specification <- "JB Specification"
+event_study_data_gh$specification <- "GH Specification"
+
+merged_study_data <- rbind(event_study_data_gh,event_study_data_jb)
+
+# Plot Event study
+es_bod <- ggplot(data = merged_study_data, aes(x = time, y = estimate, group = specification)) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "black") +
+  geom_vline(xintercept = -1, linetype = "dashed", color = "black") +
+  geom_point(
+    aes(shape = specification, color = specification),
+    size = 3,
+    position = position_nudge(x = 
+                                ifelse(merged_study_data$specification == "JB Specification", 
+                                       -0.2, 0.2))
+  ) +
+  geom_linerange(
+    aes(ymin = lower, ymax = upper, color = specification),
+    position = position_nudge(x = 
+                                ifelse(merged_study_data$specification == "JB Specification",
+                                       -0.2, 0.2))
+  ) +
+  xlab("Years since NRCP implementation") +
+  ylab("Effect on ln(BOD)") +
+  theme_minimal() +
+  theme(
+    axis.text = element_text(size = 10),
+    axis.title = element_text(size = 12, face = "bold"),
+    legend.position = "none"
+  ) +
+  scale_x_continuous(
+    breaks = seq(min(merged_study_data$time), max(merged_study_data$time), 
+                 by = 2),
+    labels = seq(min(merged_study_data$time), max(merged_study_data$time), 
+                 by = 2)
+  ) +
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 8)) +
+  geom_text(
+    data = merged_study_data %>% distinct(specification, .keep_all = TRUE),
+    aes(x = 8, y = c(-0.4, -0.5), label = specification, color = specification),
+    hjust = 0,
+    vjust = c(0, 1),
+    show.legend = FALSE
+  )
+
+
+###### lnfcoli City Level
+
+# Read the data
+data <- read_dta("../GH_replication/Greenstone-and-Hanna--2014--Replication Files/Data/Water Data/Final Data/india_waters.dta")
+
+# Create cityriver variable
+data <- data %>%
+  mutate(cityriver = paste(city, river, sep = " "))
+
+# Set missing values for specific variables in 2005
+data <- data %>%
+  mutate(across(starts_with("month_"), ~ if_else(year == 2005, 0, .)))
+
+# Drop temp* variables
+data <- data %>%
+  select(-starts_with("temp"))
+
+# Calculate yap1city, gap1city, gap2city, nrcpcity, dapcity, gomtiap1city
+data <- data %>%
+  group_by(cityriver) %>%
+  mutate(
+    yap1city = max(yap1),
+    gap1city = max(gap1),
+    gap2city = max(gap2),
+    nrcpcity = max(nrcp),
+    dapcity = max(dap),
+    gomtiap1city = max(gomtiap1)
+  )
+
+# Create temp2 variable
+data <- data %>%
+  mutate(temp2 = if_else(nrcpcity == 1, 1995,
+                         if_else(gap1city == 1, 1985,
+                                 if_else(yap1city == 1 | gap2city == 1 |
+                                           dapcity == 1 | gomtiap1city == 1, 
+                                         1993,NA_integer_))))
+
+
+# Calculate temp3 variable
+data <- data %>%
+  group_by(cityriver) %>%
+  mutate(temp3 = min(year, na.rm = TRUE))
+
+
+# Create tau variable
+data <- data %>%
+  mutate(tau = if_else((temp2 > temp3) & 
+                         (!is.na(lnfcoli)), 
+                       year - temp2,
+                       NA_integer_))
+
+# Create neveradopt variable
+data <- data %>%
+  mutate(neveradopt = if_else(is.na(temp2), 1, 0))
+
+# Create tempx variable
+data <- data %>%
+  mutate(tempx = if_else((yap1 == 1 | gap1 == 1 | gap2 == 1 | 
+                            nrcp == 1 | dap == 1 | gomtiap1 == 1) &
+                           (!is.na(lnfcoli)), 1, NA_integer_))
+
+# Create tempy variable
+data <- data %>%
+  group_by(cityriver) %>%
+  mutate(
+    tempy = if_else(!is.na(temp2), min(tempx, na.rm = TRUE), NA_integer_)
+  )
+
+# Calculate variables temp4, temp5, Mtemp4, Mtemp5
+data <- data %>%
+  mutate(
+    temp4 = if_else(tau >= 3 & !is.na(tau), 1, 0),
+    temp5 = if_else(tau <= -3 & !is.na(tau), 1, 0))
+
+data <- data %>% group_by(cityriver) %>%
+  mutate(
+    Mtemp4 = max(temp4, na.rm = TRUE),
+    Mtemp5 = max(temp5, na.rm = TRUE))
+
+# Calculate count variable
+data <- data %>%
+  group_by(state, city) %>%
+  mutate(count = sum(!is.na(lnfcoli)))
+
+#Create use variable
+data <- data %>%
+  mutate(
+    use = if_else((Mtemp4 == 1 & Mtemp5 == 1) | (neveradopt == 1 & count > 1),
+                  1,0),
+    one = 1
+  )
+data <- data %>% arrange(state,city, -year)
+
+
+# Keep only the relevant observations
+data <- data %>%
+  filter(use == 1) %>%
+  filter(!is.na(lnfcoli))
+
+# Create taum variables
+for (i in 7:1) {
+  taum_var <- paste0("taum", i)
+  data <- data %>%
+    mutate({{taum_var}} := if_else(tau == -i, 1, 0))
+}
+
+# Replace remaining NA values with 0 in taum variables
+taum_vars <- paste0("taum", 1:7)
+data <- data %>%
+  mutate(across(all_of(taum_vars), ~ if_else(is.na(.), 0, .)))
+
+# Create tau variables
+for (i in 0:10) {
+  tau_var <- paste0("tau", i)
+  data <- data %>%
+    mutate({{tau_var}} := if_else(tau == i, 1, 0))
+}
+
+# Replace remaining NA values with 0 in tau variables
+tau_vars <- paste0("tau", 0:10)
+data <- data %>%
+  mutate(across(all_of(tau_vars), ~ if_else(is.na(.), 0, .)))
+
+data <- data %>% arrange(state,city, -year)
+
+# Create tauL and tauR variables
+data <- data %>%
+  mutate(
+    tauL = ifelse(tau < -7, 1, 0),
+    tauR = ifelse((tau > 10) & (!is.na(tau)), 1, 0)
+  ) %>% 
+  mutate(
+    tauL = ifelse(is.na(tauL),0, tauL)
+  )
+
+# Perform regression
+reg_model <- lm(lnfcoli ~ taum7 + taum6 + taum5 + taum4 + taum3 + taum2  +
+                  tau0 + tau1 + tau2 + tau3 + tau4 + tau5 + tau6 + tau7 + tau8 +
+                  tau9 + tau10 + tauL + tauR + lit_urban + pce + cityriver +
+                  factor(year), data = data, weights = pop_urban)
+
+
+# Calculate the clustered standard errors
+clustered_se <- sqrt(diag(vcovHC(reg_model, cluster = ~ cityriver, type = "HC1")))
+
+coefs <- coef(reg_model)
+event_study_data_gh <- data.frame(estimate = coefs, std_error_c = clustered_se)
+event_study_data_gh$term <- row.names(event_study_data_gh)  
+row.names(event_study_data_gh) <- NULL
+
+
+target <- c("taum7","taum6","taum5","taum4","taum3","taum2",
+            "tau0","tau1","tau2","tau3","tau4","tau5","tau6","tau7","tau8",
+            "tau9","tau10")
+
+event_study_data_gh <- event_study_data_gh %>% filter(term %in% target) %>% 
+  mutate(time = c(-7,-6,-5,-4,-3,-2,0,1,2,3,4,5,6,7,8,9,10),
+         lower = estimate - 1.96 * std_error_c,  # 95% confidence interval
+         upper = estimate + 1.96 * std_error_c)
+
+
+###### lnfcoli Station Level 
+#variable names might be confusing but everything is at stn level
+
+# Read the data
+data <- read_dta("../GH_replication/Greenstone-and-Hanna--2014--Replication Files/Data/Water Data/Final Data/india_waters.dta")
+
+# Create stnriver variable
+data <- data %>%
+  mutate(cityriver = paste(stncode, river, sep = " "))
+
+# Set missing values for specific variables in 2005
+data <- data %>%
+  mutate(across(starts_with("month_"), ~ if_else(year == 2005, 0, .)))
+
+# Drop temp* variables
+data <- data %>%
+  select(-starts_with("temp"))
+
+# Calculate yap1city, gap1city, gap2city, nrcpcity, dapcity, gomtiap1city
+data <- data %>%
+  group_by(cityriver) %>%
+  mutate(
+    yap1city = max(yap1),
+    gap1city = max(gap1),
+    gap2city = max(gap2),
+    nrcpcity = max(nrcp),
+    dapcity = max(dap),
+    gomtiap1city = max(gomtiap1)
+  )
+
+# Create temp2 variable
+data <- data %>%
+  mutate(temp2 = if_else(nrcpcity == 1, 1995,
+                         if_else(gap1city == 1, 1985,
+                                 if_else(yap1city == 1 | gap2city == 1 |
+                                           dapcity == 1 | gomtiap1city == 1, 
+                                         1993,NA_integer_))))
+
+
+# Calculate temp3 variable
+data <- data %>%
+  group_by(cityriver) %>%
+  mutate(temp3 = min(year, na.rm = TRUE))
+
+
+# Create tau variable
+data <- data %>%
+  mutate(tau = if_else((temp2 > temp3) & 
+                         (!is.na(lnfcoli)), 
+                       year - temp2,
+                       NA_integer_))
+
+# Create neveradopt variable
+data <- data %>%
+  mutate(neveradopt = if_else(is.na(temp2), 1, 0))
+
+# Create tempx variable
+data <- data %>%
+  mutate(tempx = if_else((yap1 == 1 | gap1 == 1 | gap2 == 1 | 
+                            nrcp == 1 | dap == 1 | gomtiap1 == 1) &
+                           (!is.na(lnfcoli)), 1, NA_integer_))
+
+# Create tempy variable
+data <- data %>%
+  group_by(cityriver) %>%
+  mutate(
+    tempy = if_else(!is.na(temp2), min(tempx, na.rm = TRUE), NA_integer_)
+  )
+
+# Calculate variables temp4, temp5, Mtemp4, Mtemp5
+data <- data %>%
+  mutate(
+    temp4 = if_else(tau >= 3 & !is.na(tau), 1, 0),
+    temp5 = if_else(tau <= -3 & !is.na(tau), 1, 0))
+
+data <- data %>% group_by(cityriver) %>%
+  mutate(
+    Mtemp4 = max(temp4, na.rm = TRUE),
+    Mtemp5 = max(temp5, na.rm = TRUE))
+
+# Calculate count variable
+data <- data %>%
+  group_by(state, stncode) %>%
+  mutate(count = sum(!is.na(lnfcoli)))
+
+#Create use variable
+data <- data %>%
+  mutate(
+    use = if_else((Mtemp4 == 1 & Mtemp5 == 1) | (neveradopt == 1 & count > 1),
+                  1,0),
+    one = 1
+  )
+data <- data %>% arrange(state,city, -year)
+
+
+# Keep only the relevant observations
+data <- data %>%
+  filter(use == 1) %>%
+  filter(!is.na(lnfcoli))
+
+# Create taum variables
+for (i in 7:1) {
+  taum_var <- paste0("taum", i)
+  data <- data %>%
+    mutate({{taum_var}} := if_else(tau == -i, 1, 0))
+}
+
+# Replace remaining NA values with 0 in taum variables
+taum_vars <- paste0("taum", 1:7)
+data <- data %>%
+  mutate(across(all_of(taum_vars), ~ if_else(is.na(.), 0, .)))
+
+# Create tau variables
+for (i in 0:10) {
+  tau_var <- paste0("tau", i)
+  data <- data %>%
+    mutate({{tau_var}} := if_else(tau == i, 1, 0))
+}
+
+# Replace remaining NA values with 0 in tau variables
+tau_vars <- paste0("tau", 0:10)
+data <- data %>%
+  mutate(across(all_of(tau_vars), ~ if_else(is.na(.), 0, .)))
+
+data <- data %>% arrange(state,city, -year)
+
+# Create tauL and tauR variables
+data <- data %>%
+  mutate(
+    tauL = ifelse(tau < -7, 1, 0),
+    tauR = ifelse((tau > 10) & (!is.na(tau)), 1, 0)
+  ) %>% 
+  mutate(
+    tauL = ifelse(is.na(tauL),0, tauL)
+  )
+
+# Perform regression
+reg_model <- lm(lnfcoli ~ taum7 + taum6 + taum5 + taum4 + taum3 + taum2  +
+                  tau0 + tau1 + tau2 + tau3 + tau4 + tau5 + tau6 + tau7 + tau8 +
+                  tau9 + tau10 + tauL + tauR + lit_urban + pce + cityriver +
+                  factor(year), data = data, weights = pop_urban)
+
+
+# Calculate the clustered standard errors
+clustered_se <- sqrt(diag(vcovHC(reg_model, cluster = ~ cityriver, type = "HC1")))
+
+coefs <- coef(reg_model)
+event_study_data_jb <- data.frame(estimate = coefs, std_error_c = clustered_se)
+event_study_data_jb$term <- row.names(event_study_data_jb)
+row.names(event_study_data_jb) <- NULL
+
+
+target <- c("taum7","taum6","taum5","taum4","taum3","taum2",
+            "tau0","tau1","tau2","tau3","tau4","tau5","tau6","tau7","tau8",
+            "tau9","tau10")
+
+event_study_data_jb <- event_study_data_jb %>% filter(term %in% target) %>% 
+  mutate(time = c(-7,-6,-5,-4,-3,-2,0,1,2,3,4,5,6,7,8,9,10),
+         lower = estimate - 1.96 * std_error_c,  # 95% confidence interval
+         upper = estimate + 1.96 * std_error_c)
+
+# Merge data
+event_study_data_jb$specification <- "JB Specification"
+event_study_data_gh$specification <- "GH Specification"
+
+merged_study_data <- rbind(event_study_data_gh,event_study_data_jb)
+
+# Plot Event study
+es_fcoli <- ggplot(data = merged_study_data, aes(x = time, y = estimate, group = specification)) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "black") +
+  geom_vline(xintercept = -1, linetype = "dashed", color = "black") +
+  geom_point(
+    aes(shape = specification, color = specification),
+    size = 3,
+    position = position_nudge(x = 
+                                ifelse(merged_study_data$specification == "JB Specification", 
+                                       -0.2, 0.2))
+  ) +
+  geom_linerange(
+    aes(ymin = lower, ymax = upper, color = specification),
+    position = position_nudge(x = 
+                                ifelse(merged_study_data$specification == "JB Specification",
+                                       -0.2, 0.2))
+  ) +
+  xlab("Years since NRCP implementation") +
+  ylab("Effect on ln(FColi)") +
+  theme_minimal() +
+  theme(
+    axis.text = element_text(size = 10),
+    axis.title = element_text(size = 12, face = "bold"),
+    legend.position = "none"
+  ) +
+  scale_x_continuous(
+    breaks = seq(min(merged_study_data$time), max(merged_study_data$time), 
+                 by = 2),
+    labels = seq(min(merged_study_data$time), max(merged_study_data$time), 
+                 by = 2)
+  ) +
+  scale_y_continuous(breaks = scales::pretty_breaks(8))
+
+```
+
+```{r echo=FALSE, fig.cap="\\label{fig:plot_a} vent Study of Water Policy Using Dissaggregated Data", message=FALSE, warning=FALSE, fig.height= 10, fig.width= 10}
+# Arrange the plots in one column with three rows
+grid.arrange(es_bod, es_fcoli, ncol = 1, bottom = "Notes: The figures show an event study plot from the estimation of equations (3) --GH Specification-- and \n (4) --JB Specification-- using disaggregated station-level for both specifications. City, river and time fixed effects were \n included for GH Specification. Station, river and time fixed effects were included for JB Specification. \nStandard errors were clustered at the city-river level and station-river level respectively.")
+```
+
+
+```{r echo=FALSE, fig.cap="\\label{fig:plot4} Rivers in India", message=FALSE, warning=FALSE, fig.height= 5, fig.width= 5}
+
+img1_path <- "data/Images/asian_rivers.png"
+img1 <- readPNG(img1_path, native = TRUE, info = TRUE)
+include_graphics(img1_path) 
+
+```
+
+
+```{r echo=FALSE, fig.cap="\\label{fig:plot5} Wrongly Located India's Monitoring Stations", message=FALSE, warning=FALSE, fig.height= 8, fig.width= 10}
+
+df_w_2 <- read_dta("../GH_replication/Greenstone-and-Hanna--2014--Replication Files/Data/Water Data/Final Data/india_waters.dta") 
+
+# Create a data frame with filtered stations' longitudes and latitudes
+points_df <- data.frame(lon = df_w_2$lon, lat = df_w_2$lat)
+
+# Get map data for India
+india_map <- map_data("world", region = "India")
+
+# Plotting the map with filtered rivers and monitoring stations
+ggplot() +
+  geom_polygon(data = india_map, aes(x = long, y = lat, group = group), fill = "white", color = "black") +
+  geom_point(data = points_df, aes(x = lon, y = lat), color = "red", size = 0.9) +
+  coord_fixed() +
+  labs(x = "Longitude", y = "Latitude")
+```
