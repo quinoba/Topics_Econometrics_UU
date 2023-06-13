@@ -7,7 +7,7 @@ This was the final assignment for Adrian Adermon and Daniel Knutsson'  Topics in
 
 This repository is divided in 2 main folders:
 
- 1. GH_replication: which contains the replication package of the original authors with some code modifications and some name changes I implemented in order to be able to fully replicate the results.
+ 1. GH_replication: which contains the original water dataset used by GH obtained from the replication package.
  
 2. JB_replication: which contains my own replication package to replicate barrutia_1.pdf file
 
